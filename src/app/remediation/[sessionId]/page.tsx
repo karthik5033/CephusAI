@@ -387,13 +387,20 @@ export default function RemediationPage() {
 
         {/* Actions */}
         <div className="flex items-center justify-between">
-          <button onClick={() => window.open(`${API}/api/remediation/${sessionId}/download`, "_blank")}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium border border-gray-600/40 text-gray-300 hover:bg-gray-800/50 transition-all">
-            <Download className="w-4 h-4" /> Download Mitigated Model
-          </button>
-          <button id="back-to-upload" onClick={() => router.push("/upload")}
-            className="group flex items-center gap-2.5 px-6 py-3 rounded-xl text-sm font-semibold bg-gradient-to-r from-amber-500 to-amber-600 text-gray-950 shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 hover:scale-[1.02] transition-all">
-            Start New Audit
+          <div className="flex gap-4">
+            <button onClick={() => window.open(`${API}/api/remediation/${sessionId}/download`, "_blank")}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium border border-gray-600/40 text-gray-300 hover:bg-gray-800/50 transition-all">
+              <Download className="w-4 h-4" /> Download Mitigated Model
+            </button>
+            <button onClick={() => window.open(`${API}/api/reports/${sessionId}/pdf`, "_blank")}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium border border-red-500/20 text-red-400 bg-red-500/5 hover:bg-red-500/10 transition-all">
+              <Download className="w-4 h-4" /> Export PDF Audit
+            </button>
+          </div>
+
+          <button id="proceed-to-explain" onClick={() => router.push(`/explain/${sessionId}`)}
+            className="group flex items-center gap-2.5 px-6 py-3 rounded-xl text-sm font-semibold bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:scale-[1.02] transition-all">
+            Proceed to Decision Explainability
             <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </button>
         </div>
