@@ -20,9 +20,12 @@ from sqlalchemy import (
     Float,
     ForeignKey,
     Integer,
+    JSON,
     String,
     Text,
     CheckConstraint,
+    TypeDecorator,
+    CHAR,
 )
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.types import JSON as JSONB  # Works on both SQLite & PostgreSQL
@@ -36,6 +39,31 @@ from sqlalchemy.orm import DeclarativeBase, relationship
 class Base(DeclarativeBase):
     """Shared declarative base for all ORM models."""
     pass
+
+
+# ---------------------------------------------------------------------------
+# Portable UUID type (works on both PostgreSQL and SQLite)
+# ---------------------------------------------------------------------------
+
+class UUIDType(TypeDecorator):
+    """Platform-independent UUID type.
+    Uses PostgreSQL's native UUID when available, otherwise stores as CHAR(36).
+    """
+    impl = CHAR(36)
+    cache_ok = True
+
+    def process_bind_param(self, value, dialect):
+        if value is not None:
+            if isinstance(value, uuid.UUID):
+                return str(value)
+            return str(uuid.UUID(value))
+        return value
+
+    def process_result_value(self, value, dialect):
+        if value is not None:
+            if not isinstance(value, uuid.UUID):
+                return uuid.UUID(value)
+        return value
 
 
 # ---------------------------------------------------------------------------
@@ -74,7 +102,7 @@ class RemediationStatus(str, enum.Enum):
 def _uuid_pk() -> Column:
     """UUID primary key that works on both PostgreSQL and SQLite."""
     return Column(
-        PG_UUID(as_uuid=True),
+        UUIDType(),
         primary_key=True,
         default=uuid.uuid4,
         nullable=False,
@@ -84,7 +112,7 @@ def _uuid_pk() -> Column:
 def _uuid_fk(target: str) -> Column:
     """UUID foreign key with CASCADE delete."""
     return Column(
-        PG_UUID(as_uuid=True),
+        UUIDType(),
         ForeignKey(target, ondelete="CASCADE"),
         nullable=False,
     )
@@ -149,7 +177,7 @@ class BiasResult(Base):
         Enum(BiasSeverity, name="bias_severity", create_constraint=True),
         nullable=False,
     )
-    group_breakdown     = Column(JSONB, nullable=True)
+    group_breakdown     = Column(JSON, nullable=True)
     created_at          = Column(DateTime(timezone=True), default=_now, nullable=False)
 
     # relationship

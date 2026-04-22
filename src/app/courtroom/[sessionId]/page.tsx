@@ -81,7 +81,7 @@ function AgentCard({
 
   return (
     <div className={`rounded-2xl border ${borderColor} ${bgColor} transition-all duration-500 ${isActive ? "ring-2 ring-offset-2 ring-offset-[#0a0a0f]" : ""}`}
-         style={isActive ? { ringColor: color } : {}}>
+         style={isActive ? { "--tw-ring-color": color } as React.CSSProperties : {}}>
       <div className="flex items-center gap-3 px-5 pt-4 pb-2">
         <div className={`flex items-center justify-center w-9 h-9 rounded-xl ${isActive ? "animate-pulse" : ""}`}
              style={{ backgroundColor: `${color}20` }}>

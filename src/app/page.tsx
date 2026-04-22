@@ -39,42 +39,18 @@ export default function LandingPage() {
   });
 
   useEffect(() => {
-    fetch("/api/analyze", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ dataset_name: 'COMPAS' })
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.fairness_metrics) {
-          setLiveStats(data.fairness_metrics);
-        }
-      })
-      .catch(err => console.error(err));
+    // Demo stats for landing page
+    setLiveStats({
+      demographic_parity: 0.62,
+      disparate_impact: 0.58,
+      equal_opportunity: 0.75
+    });
   }, []);
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden selection:bg-gold/30">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full border-b border-border bg-background/80 backdrop-blur-md z-50">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2 font-mono font-bold text-lg tracking-tight">
-            <ScaleIcon className="w-5 h-5 text-gold" />
-            <span>TrialAI</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="/demo" className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors">
-              Demo
-            </Link>
-            <Link 
-              href="/trial/upload" 
-              className="text-sm font-medium bg-foreground text-background px-4 py-2 rounded-md hover:bg-foreground/90 transition-colors"
-            >
-              Start Trial
-            </Link>
-          </div>
-        </div>
-      </nav>
+
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 px-6">
@@ -129,7 +105,7 @@ export default function LandingPage() {
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link 
-              href="/trial/upload"
+              href="/upload"
               className="flex items-center gap-2 bg-surface hover:bg-surface/80 border border-border text-foreground font-medium px-8 py-4 rounded-lg transition-all"
             >
               Upload Dataset
@@ -342,13 +318,13 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2 font-mono font-bold text-foreground">
             <ScaleIcon className="w-4 h-4 text-gold" />
-            <span>TrialAI</span>
+            <span>AI Courtroom v2.0</span>
           </div>
           
           <div className="flex gap-6">
             <Link href="#" className="hover:text-foreground transition-colors">About</Link>
             <Link href="/demo" className="hover:text-foreground transition-colors">Demo</Link>
-            <Link href="/trial/upload" className="hover:text-foreground transition-colors">Upload</Link>
+            <Link href="/upload" className="hover:text-foreground transition-colors">Upload</Link>
           </div>
 
           <div className="flex items-center gap-4">

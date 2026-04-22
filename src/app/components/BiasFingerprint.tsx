@@ -327,7 +327,7 @@ export default function BiasFingerprint({
                                 background: "white",
                                 border: "1px solid #E2E8F0",
                               }}
-                              formatter={(value: number) => [`${value}%`, "Bias Score"]}
+                              formatter={(value: any) => [`${value}%`, "Bias Score"]}
                             />
                             <Radar
                               name="Bias Score"

@@ -468,7 +468,7 @@ export default function AnalysisPage() {
                   <YAxis dataKey="name" type="category" width={120} tick={{ fontSize: 11, fill: "#94a3b8" }} />
                   <Tooltip
                     contentStyle={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 8, fontSize: 12 }}
-                    formatter={(val: number) => [val.toFixed(4), "Importance"]}
+                    formatter={(val: any) => [typeof val === 'number' ? val.toFixed(4) : val, "Importance"]}
                   />
                   <Bar dataKey="importance" radius={[0, 4, 4, 0]}>
                     {shapData.map((entry, i) => (
@@ -498,7 +498,7 @@ export default function AnalysisPage() {
                     innerRadius={50} outerRadius={80}
                     paddingAngle={3}
                     dataKey="value"
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    label={({ name, percent }) => `${name} ${(typeof percent === 'number' ? percent * 100 : 0).toFixed(0)}%`}
                   >
                     {demoData.map((entry, i) => (
                       <Cell key={i} fill={entry.fill} />
