@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   History, Loader2, ChevronRight, Scale, AlertTriangle, CheckCircle2,
-  XCircle, FileText, Activity, ShieldAlert
+  XCircle, FileText, Activity, ShieldAlert, Search
 } from "lucide-react";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -188,9 +188,34 @@ export default function HistoryPage() {
                   </div>
 
                   {/* Right: Progress/Action */}
-                  <div className="flex items-center gap-4 text-sm justify-between md:justify-end md:w-32">
-                    <span className={`font-semibold ${progressColor}`}>{phaseName}</span>
-                    <ChevronRight className="w-5 h-5 text-gray-600 group-hover:text-white transition-colors" />
+                  <div className="flex items-center gap-4 text-sm justify-between md:justify-end md:w-auto">
+                    <span className={`font-semibold ${progressColor} hidden md:inline-block`}>{phaseName}</span>
+                    
+                    {/* Action Dropdown / Buttons */}
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); router.push(`/explain/${s.session_id}`); }}
+                        className="p-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg border border-gray-700 transition-colors"
+                        title="Decision Explainability"
+                      >
+                        <Search className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); window.open(`${API}/api/reports/${s.session_id}/pdf`); }}
+                        className="p-2 bg-gray-800 hover:bg-gray-700 text-red-400 rounded-lg border border-gray-700 transition-colors"
+                        title="Download PDF Report"
+                      >
+                        <FileText className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); window.open(`${API}/api/reports/${s.session_id}/docx`); }}
+                        className="p-2 bg-gray-800 hover:bg-gray-700 text-blue-400 rounded-lg border border-gray-700 transition-colors"
+                        title="Download DOCX Report"
+                      >
+                        <FileText className="w-4 h-4" />
+                      </button>
+                      <ChevronRight className="w-5 h-5 text-gray-600 group-hover:text-white transition-colors ml-2 self-center" />
+                    </div>
                   </div>
                 </div>
               );
