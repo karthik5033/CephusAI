@@ -69,4 +69,3 @@ htmlcov/
 .venv
 venv/
 ENV/
-courtroom.db

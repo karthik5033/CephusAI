@@ -119,7 +119,7 @@ export default function NewTrialPage() {
     const rawDatasetName = localStorage.getItem("trialDatasetName");
 
     if (!rawAnalysis || !rawDatasetName) {
-      router.push("/upload");
+      router.push("/trial/upload");
       return;
     }
 
@@ -222,7 +222,7 @@ export default function NewTrialPage() {
       })();
     } catch (e) {
       console.error("Failed to parse analysis data", e);
-      router.push("/upload");
+      router.push("/trial/upload");
     }
   }, [router]);
 
