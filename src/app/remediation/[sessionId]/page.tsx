@@ -9,7 +9,8 @@ import {
 import {
   Wrench, ArrowRight, Loader2, CheckCircle2, XCircle,
   AlertTriangle, Download, Shield, ChevronDown, Code2,
-  TrendingUp, Activity,
+  TrendingUp, Activity, Zap, Search, FileCode2,
+  ClipboardCheck, Users, Scale, Hash,
 } from "lucide-react";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -38,7 +39,27 @@ interface RemediationResult {
   mitigated_dir: number;
   improvements: Improvement[];
   script_diff: string;
+  llm_explanation?: {
+    stage1_analysis?: {
+      bias_patterns?: { location: string; pattern: string; severity: string }[];
+      summary?: string;
+      model_fit_location?: string;
+      recommended_strategy?: string;
+    };
+    change_log?: { category: string; summary: string; risk_tradeoff: string }[];
+    fairness_expectations?: {
+      expected_effect?: string;
+      unchanged_aspects?: string;
+    };
+  };
   all_passed: boolean;
+  reevaluation_report?: {
+    headline?: string;
+    technical_summary?: string;
+    manager_summary?: string;
+    legal_summary?: string;
+    key_numbers?: { metric: string; before: number; after: number; comment: string }[];
+  };
 }
 
 type Phase = "config" | "running" | "done" | "error";
@@ -359,27 +380,247 @@ export default function RemediationPage() {
           </div>
         </div>
 
+        {/* Active Remediation Loop v2.0 Logic */}
+        {result.llm_explanation && (
+          <div className="mb-10 space-y-6">
+            <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+              <Zap className="w-5 h-5 text-yellow-400" /> Active Remediation Loop v2.0
+            </h2>
+
+            {/* Stage 1: Bias Patterns Found */}
+            {result.llm_explanation.stage1_analysis && (
+              <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <Search className="w-4 h-4 text-blue-400" />
+                  <p className="text-xs uppercase tracking-widest text-blue-400 font-bold">Stage 1: Script Analysis</p>
+                </div>
+                {result.llm_explanation.stage1_analysis.summary && (
+                  <p className="text-sm text-gray-300 leading-relaxed mb-4 italic border-l-2 border-blue-500/30 pl-3">
+                    {result.llm_explanation.stage1_analysis.summary}
+                  </p>
+                )}
+                {result.llm_explanation.stage1_analysis.bias_patterns && result.llm_explanation.stage1_analysis.bias_patterns.length > 0 && (
+                  <div className="space-y-2">
+                    <p className="text-[10px] uppercase tracking-widest text-gray-500 font-semibold">Bias Patterns Detected</p>
+                    {result.llm_explanation.stage1_analysis.bias_patterns.map((bp, i) => (
+                      <div key={i} className={`flex items-start gap-3 text-xs px-3 py-2 rounded-lg ${
+                        bp.severity === "critical" ? "bg-red-500/10 border border-red-500/20" :
+                        bp.severity === "warning" ? "bg-amber-500/10 border border-amber-500/20" :
+                        "bg-gray-800/50 border border-gray-700/30"
+                      }`}>
+                        <span className="font-mono text-gray-500 shrink-0">{bp.location}</span>
+                        <span className="text-gray-300">{bp.pattern}</span>
+                        <span className={`ml-auto shrink-0 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase ${
+                          bp.severity === "critical" ? "bg-red-500/20 text-red-400" :
+                          bp.severity === "warning" ? "bg-amber-500/20 text-amber-400" :
+                          "bg-gray-700/40 text-gray-400"
+                        }`}>{bp.severity}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Stage 2: Change Log */}
+            {result.llm_explanation.change_log && result.llm_explanation.change_log.length > 0 && (
+              <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <FileCode2 className="w-4 h-4 text-emerald-400" />
+                  <p className="text-xs uppercase tracking-widest text-emerald-400 font-bold">Stage 2: Code Modifications</p>
+                </div>
+                <div className="space-y-3">
+                  {result.llm_explanation.change_log.map((cl, i) => (
+                    <div key={i} className="rounded-lg bg-gray-900/60 border border-gray-700/30 p-3">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400">{cl.category.replace(/_/g, " ")}</span>
+                      </div>
+                      <p className="text-xs text-gray-300 mb-1">{cl.summary}</p>
+                      <p className="text-[11px] text-gray-500 flex items-center gap-1">
+                        <TrendingUp className="w-3 h-3" /> Risk trade-off: {cl.risk_tradeoff}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Fairness Expectations */}
+            {result.llm_explanation.fairness_expectations && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {result.llm_explanation.fairness_expectations.expected_effect && (
+                  <div className="p-4 rounded-xl border border-purple-500/20 bg-purple-500/5">
+                    <p className="text-[10px] uppercase tracking-widest text-purple-400 font-bold mb-2">Expected Fairness Impact</p>
+                    <p className="text-xs text-gray-300 leading-relaxed">{result.llm_explanation.fairness_expectations.expected_effect}</p>
+                  </div>
+                )}
+                {result.llm_explanation.fairness_expectations.unchanged_aspects && (
+                  <div className="p-4 rounded-xl border border-gray-600/20 bg-gray-800/30">
+                    <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-2">Unchanged Aspects</p>
+                    <p className="text-xs text-gray-300 leading-relaxed">{result.llm_explanation.fairness_expectations.unchanged_aspects}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Pipeline Stage Table */}
+            <div className="rounded-xl border border-gray-700/30 bg-gray-900/40 overflow-hidden">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-gray-800/50 text-gray-400 uppercase tracking-wider">
+                  <tr>
+                    <th className="px-4 py-2 font-semibold">Stage</th>
+                    <th className="px-4 py-2 font-semibold">Action</th>
+                    <th className="px-4 py-2 font-semibold">Method</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-800/50">
+                  {[
+                    { stage: "1. Script Analysis", action: "LLM identifies bias-inducing patterns", method: "Claude API", color: "text-blue-400" },
+                    { stage: "2. Code Modification", action: "LLM rewrites script with mitigation", method: "Unified Diff", color: "text-emerald-400" },
+                    { stage: "3. Execution", action: "Modified script validated", method: "Subprocess", color: "text-amber-400" },
+                    { stage: "4. Retrain", action: "Model retrained on mitigated pipeline", method: "scikit-learn", color: "text-gray-400" },
+                    { stage: "5. Re-Evaluation", action: "Fairlearn + SHAP on new model", method: "MetricFrame", color: "text-gray-400" },
+                  ].map((row) => (
+                    <tr key={row.stage}>
+                      <td className="px-4 py-2 text-gray-300">{row.stage}</td>
+                      <td className="px-4 py-2 text-gray-400">{row.action}</td>
+                      <td className={`px-4 py-2 font-mono ${row.color}`}>{row.method}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
         {/* Script diff */}
         {result.script_diff && (
           <div className="rounded-xl border border-gray-700/30 bg-gray-900/50 mb-8 overflow-hidden">
             <button onClick={() => setShowDiff(!showDiff)}
               className="w-full flex items-center justify-between px-5 py-3 text-left hover:bg-gray-800/30 transition-colors">
               <span className="flex items-center gap-2 text-sm font-semibold text-gray-200">
-                <Code2 className="w-4 h-4 text-blue-400" /> Script Diff
+                <Code2 className="w-4 h-4 text-blue-400" /> Remediated Training Script (Unified Diff)
               </span>
               <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${showDiff ? "rotate-180" : ""}`} />
             </button>
             {showDiff && (
               <div className="px-5 pb-5 border-t border-gray-700/30">
-                <pre className="text-xs font-mono leading-relaxed overflow-x-auto mt-3 max-h-96 overflow-y-auto">
+                <div className="mt-4 mb-2 flex items-center gap-2 text-[10px] text-gray-500 uppercase tracking-widest font-bold">
+                  <Activity className="w-3 h-3" /> Differential Audit Log
+                </div>
+                <pre className="text-[11px] font-mono leading-relaxed overflow-x-auto p-4 rounded-lg bg-black/40 border border-white/5 max-h-[500px] overflow-y-auto">
                   {result.script_diff.split("\n").map((line, i) => {
                     let color = "text-gray-500";
-                    if (line.startsWith("+") && !line.startsWith("+++")) color = "text-emerald-400";
-                    else if (line.startsWith("-") && !line.startsWith("---")) color = "text-red-400";
-                    else if (line.startsWith("@@")) color = "text-blue-400";
-                    return <div key={i} className={color}>{line}</div>;
+                    let bg = "";
+                    if (line.startsWith("+") && !line.startsWith("+++")) {
+                      color = "text-emerald-400";
+                      bg = "bg-emerald-500/5";
+                    }
+                    else if (line.startsWith("-") && !line.startsWith("---")) {
+                      color = "text-red-400";
+                      bg = "bg-red-500/5";
+                    }
+                    else if (line.startsWith("@@")) {
+                      color = "text-blue-400";
+                      bg = "bg-blue-500/5";
+                    }
+                    return <div key={i} className={`${color} ${bg} px-2`}>{line}</div>;
                   })}
                 </pre>
+              </div>
+            )}
+          </div>
+        )}
+        {/* Stage 5: Re-Evaluation Report */}
+        {result.reevaluation_report && (
+          <div className="mb-10 space-y-5">
+            <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+              <ClipboardCheck className="w-5 h-5 text-cyan-400" /> Stage 5: Re-Evaluation Report
+            </h2>
+
+            {/* Headline */}
+            {result.reevaluation_report.headline && (
+              <div className="rounded-xl border border-cyan-500/20 bg-gradient-to-r from-cyan-500/5 to-blue-500/5 p-5">
+                <p className="text-sm text-white font-semibold leading-relaxed">
+                  {result.reevaluation_report.headline}
+                </p>
+              </div>
+            )}
+
+            {/* Multi-audience summaries */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {result.reevaluation_report.technical_summary && (
+                <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Code2 className="w-4 h-4 text-blue-400" />
+                    <p className="text-[10px] uppercase tracking-widest text-blue-400 font-bold">Technical</p>
+                  </div>
+                  <p className="text-xs text-gray-300 leading-relaxed">{result.reevaluation_report.technical_summary}</p>
+                </div>
+              )}
+              {result.reevaluation_report.manager_summary && (
+                <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Users className="w-4 h-4 text-amber-400" />
+                    <p className="text-[10px] uppercase tracking-widest text-amber-400 font-bold">Business</p>
+                  </div>
+                  <p className="text-xs text-gray-300 leading-relaxed">{result.reevaluation_report.manager_summary}</p>
+                </div>
+              )}
+              {result.reevaluation_report.legal_summary && (
+                <div className="rounded-xl border border-rose-500/20 bg-rose-500/5 p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Scale className="w-4 h-4 text-rose-400" />
+                    <p className="text-[10px] uppercase tracking-widest text-rose-400 font-bold">Legal / Compliance</p>
+                  </div>
+                  <p className="text-xs text-gray-300 leading-relaxed">{result.reevaluation_report.legal_summary}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Key Numbers Table */}
+            {result.reevaluation_report.key_numbers && result.reevaluation_report.key_numbers.length > 0 && (
+              <div className="rounded-xl border border-gray-700/30 bg-gray-900/50 overflow-hidden">
+                <div className="flex items-center gap-2 px-5 py-3 border-b border-gray-700/30">
+                  <Hash className="w-4 h-4 text-cyan-400" />
+                  <p className="text-xs uppercase tracking-widest text-gray-400 font-bold">Key Metric Deltas</p>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="text-gray-500 border-b border-gray-700/40">
+                        <th className="text-left py-2 px-4">Metric</th>
+                        <th className="text-right py-2 px-4">Before</th>
+                        <th className="text-right py-2 px-4">After</th>
+                        <th className="text-right py-2 px-4">Delta</th>
+                        <th className="text-left py-2 px-4">Assessment</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {result.reevaluation_report.key_numbers.map((kn, i) => {
+                        const delta = (typeof kn.after === "number" && typeof kn.before === "number")
+                          ? kn.after - kn.before : null;
+                        return (
+                          <tr key={i} className="border-b border-gray-800/40">
+                            <td className="py-2 px-4 text-gray-300 font-medium">{kn.metric}</td>
+                            <td className="py-2 px-4 text-right font-mono text-gray-400">
+                              {typeof kn.before === "number" ? kn.before.toFixed(4) : kn.before}
+                            </td>
+                            <td className="py-2 px-4 text-right font-mono text-white">
+                              {typeof kn.after === "number" ? kn.after.toFixed(4) : kn.after}
+                            </td>
+                            <td className={`py-2 px-4 text-right font-mono font-bold ${
+                              delta === null ? "text-gray-500" : delta >= 0 ? "text-emerald-400" : "text-red-400"
+                            }`}>
+                              {delta !== null ? `${delta >= 0 ? "+" : ""}${delta.toFixed(4)}` : "—"}
+                            </td>
+                            <td className="py-2 px-4 text-gray-400 max-w-[200px]">{kn.comment}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
           </div>

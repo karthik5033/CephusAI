@@ -24,7 +24,8 @@ from sqlalchemy import (
     Text,
     CheckConstraint,
 )
-from sqlalchemy.dialects.postgresql import JSONB, UUID as PG_UUID
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+from sqlalchemy.types import JSON as JSONB  # Works on both SQLite & PostgreSQL
 from sqlalchemy.orm import DeclarativeBase, relationship
 
 
@@ -112,11 +113,14 @@ class AnalysisSession(Base):
     )
     row_count        = Column(Integer, nullable=True)
     feature_count    = Column(Integer, nullable=True)
+    intended_use     = Column(String(100), nullable=True)
+    purpose_description = Column(Text, nullable=True)
 
     # relationships
     bias_results      = relationship("BiasResult",       back_populates="session", cascade="all, delete-orphan")
     verdicts          = relationship("CourtRoomVerdict",  back_populates="session", cascade="all, delete-orphan")
     remediation_runs  = relationship("RemediationRun",   back_populates="session", cascade="all, delete-orphan")
+    dataset_reviews   = relationship("DatasetReview",    back_populates="session", cascade="all, delete-orphan")
 
     def __repr__(self) -> str:
         return (
@@ -210,6 +214,8 @@ class RemediationRun(Base):
     mitigated_accuracy  = Column(Float, nullable=True)
     strategy_used       = Column(String(100), nullable=True)
     script_diff         = Column(Text, nullable=True)
+    llm_explanation     = Column(JSONB, nullable=True)
+    reevaluation_report = Column(JSONB, nullable=True)
     status              = Column(
         Enum(RemediationStatus, name="remediation_status", create_constraint=True),
         nullable=False,
@@ -225,4 +231,31 @@ class RemediationRun(Base):
             f"<RemediationRun(id={self.id!s}, "
             f"strategy={self.strategy_used!r}, "
             f"status={self.status!r})>"
+        )
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  DatasetReview (Phase 0: Data-Minimisation Check)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class DatasetReview(Base):
+    __tablename__ = "dataset_reviews"
+
+    id                  = _uuid_pk()
+    session_id          = _uuid_fk("analysis_sessions.id")
+    intended_use        = Column(String(100), nullable=True)
+    purpose_description = Column(Text, nullable=True)
+    column_metadata     = Column(JSONB, nullable=True)
+    candidate_targets   = Column(JSONB, nullable=True)
+    llm_review          = Column(JSONB, nullable=True)
+    user_overrides      = Column(JSONB, nullable=True)
+    created_at          = Column(DateTime(timezone=True), default=_now, nullable=False)
+
+    # relationship
+    session = relationship("AnalysisSession", back_populates="dataset_reviews")
+
+    def __repr__(self) -> str:
+        return (
+            f"<DatasetReview(id={self.id!s}, "
+            f"purpose={self.intended_use!r})>"
         )

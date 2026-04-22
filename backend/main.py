@@ -74,6 +74,7 @@ from backend.routers.remediation import router as remediation_router  # noqa: E4
 from backend.routers.reports import router as reports_router  # noqa: E402
 from backend.routers.sessions import router as sessions_router  # noqa: E402
 from backend.routers.explain import router as explain_router  # noqa: E402
+from backend.routers.dataset_review import router as dataset_review_router  # noqa: E402
 
 app.include_router(upload_router, prefix="/api")
 app.include_router(analysis_router, prefix="/api")
@@ -82,6 +83,7 @@ app.include_router(remediation_router, prefix="/api")
 app.include_router(reports_router, prefix="/api")
 app.include_router(sessions_router, prefix="/api")
 app.include_router(explain_router, prefix="/api")
+app.include_router(dataset_review_router, prefix="/api")
 
 
 # ---------------------------------------------------------------------------

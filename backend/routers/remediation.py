@@ -124,7 +124,16 @@ async def run_remediation_endpoint(
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Failed to load model: {exc}")
 
-    # ── 3. Create pending DB record ─────────────────────────────────────────
+    # ── 3. Load script if available ────────────────────────────────────────
+    script_path = session_dir / "script.py"
+    script_content = None
+    if script_path.exists():
+        try:
+            script_content = script_path.read_text(encoding="utf-8")
+        except Exception as exc:
+            logger.warning("Failed to read script.py: %s", exc)
+
+    # ── 4. Create pending DB record ─────────────────────────────────────────
     run_row = RemediationRun(
         session_id=sid,
         strategy_used=body.strategy,
@@ -142,6 +151,7 @@ async def run_remediation_endpoint(
             target_column=body.target_column,
             sensitive_attrs=body.sensitive_attributes,
             strategy=body.strategy,
+            script_content=script_content,
         )
     except Exception as exc:
         run_row.status = RemediationStatus.failed
@@ -149,12 +159,21 @@ async def run_remediation_endpoint(
         logger.exception("Remediation failed for session %s", session_id)
         raise HTTPException(status_code=500, detail=f"Remediation failed: {exc}")
 
-    # ── 5. Save mitigated model to disk ─────────────────────────────────────
+    # ── 5. Save mitigated model to disk ───────────────────────────────────
     mitigated_model_path = session_dir / "mitigated_model.pkl"
     try:
         joblib.dump(result["mitigated_model"], str(mitigated_model_path))
     except Exception as exc:
         logger.error("Failed to save mitigated model: %s", exc)
+
+    # Save modified script to disk if generated
+    if result.get("modified_script"):
+        try:
+            (session_dir / "mitigated_script.py").write_text(
+                result["modified_script"], encoding="utf-8"
+            )
+        except Exception as exc:
+            logger.error("Failed to save mitigated script: %s", exc)
 
     # ── 6. Update DB record ─────────────────────────────────────────────────
     run_row.original_dir = result["original_dir"]
@@ -162,6 +181,8 @@ async def run_remediation_endpoint(
     run_row.original_accuracy = result["original_accuracy"]
     run_row.mitigated_accuracy = result["mitigated_accuracy"]
     run_row.script_diff = result["script_diff"]
+    run_row.llm_explanation = result.get("llm_explanation")
+    run_row.reevaluation_report = result.get("reevaluation_report")
     run_row.status = RemediationStatus.complete
     await db.commit()
     await db.refresh(run_row)
@@ -185,6 +206,8 @@ async def run_remediation_endpoint(
         "mitigated_dir": result["mitigated_dir"],
         "improvements": result["improvements"],
         "script_diff": result["script_diff"],
+        "llm_explanation": result.get("llm_explanation"),
+        "reevaluation_report": result.get("reevaluation_report"),
         "all_passed": result["all_passed"],
     }
 
@@ -229,6 +252,8 @@ async def get_remediation(
         "original_accuracy": run.original_accuracy,
         "mitigated_accuracy": run.mitigated_accuracy,
         "script_diff": run.script_diff,
+        "llm_explanation": run.llm_explanation,
+        "reevaluation_report": run.reevaluation_report,
         "created_at": run.created_at.isoformat() if run.created_at else None,
     }
 

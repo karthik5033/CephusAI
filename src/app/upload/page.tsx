@@ -14,6 +14,7 @@ import {
   ArrowRight,
   Shield,
   ChevronRight,
+  Database,
 } from "lucide-react";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -473,8 +474,23 @@ export default function UploadPage() {
           </StepCard>
         </div>
 
+        {/* Phase 0: Dataset Review button */}
+        {datasetStatus === "success" && sessionId && (
+          <div className="mt-5">
+            <button
+              id="proceed-to-dataset-review"
+              onClick={() => router.push(`/dataset-review/${sessionId}`)}
+              className="w-full group flex items-center justify-center gap-2.5 px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 border border-violet-500/30 text-violet-400 bg-violet-500/5 hover:bg-violet-500/10 hover:border-violet-500/50"
+            >
+              <Database className="w-4 h-4" />
+              Run Data Minimisation Check (No Model Required)
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            </button>
+          </div>
+        )}
+
         {/* Proceed button */}
-        <div className="mt-8 flex justify-end">
+        <div className="mt-4 flex justify-end">
           <button
             id="proceed-to-analysis"
             disabled={!canProceed}
