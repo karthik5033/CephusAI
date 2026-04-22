@@ -120,20 +120,14 @@ export default function UploadPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-24">
-      {/* Navigation */}
-      <nav className="border-b border-border bg-surface sticky top-0 z-50">
-        <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 font-mono font-bold text-lg tracking-tight">
-            <ScaleIcon className="w-5 h-5 text-gold" />
-            <span>TrialAI</span>
-          </Link>
-          <div className="flex items-center gap-3 text-sm font-medium text-foreground/60">
-            <span className={step >= 1 ? "text-foreground" : ""}>1. Upload Evidence</span>
-            <ChevronRight className="w-4 h-4" />
-            <span className={step >= 2 ? "text-foreground" : ""}>2. Configure</span>
-          </div>
+      {/* Step Indicator */}
+      <div className="border-b border-border bg-surface">
+        <div className="max-w-5xl mx-auto px-6 h-12 flex items-center justify-end gap-3 text-sm font-medium text-foreground/60">
+          <span className={step >= 1 ? "text-foreground" : ""}>1. Upload Evidence</span>
+          <ChevronRight className="w-4 h-4" />
+          <span className={step >= 2 ? "text-foreground" : ""}>2. Configure</span>
         </div>
-      </nav>
+      </div>
 
       <main className="max-w-4xl mx-auto px-6 pt-12">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">

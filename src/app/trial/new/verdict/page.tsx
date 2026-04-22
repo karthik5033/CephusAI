@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Gavel, AlertTriangle, CheckCircle2, XCircle, Download, RotateCcw, Scale, Loader2, Code2, FileDown, ArrowRight } from "lucide-react";
+import { Gavel, AlertTriangle, CheckCircle2, XCircle, Download, RotateCcw, Scale, Loader2, Code2, FileDown, ArrowRight, Fingerprint } from "lucide-react";
+import BiasFingerprint from "@/app/components/BiasFingerprint";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -37,6 +38,7 @@ export default function NewTrialVerdictPage() {
   const [modelType, setModelType] = useState("Unknown");
   const [codeAnalysis, setCodeAnalysis] = useState<any>(null);
   const [hasScript, setHasScript] = useState(false);
+  const [fingerprintOpen, setFingerprintOpen] = useState(false);
 
   useEffect(() => {
     const rawAnalysis = localStorage.getItem("trialAnalysis");
@@ -203,21 +205,16 @@ export default function NewTrialVerdictPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Navigation */}
-      <nav className="border-b border-border bg-surface sticky top-0 z-50">
-        <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 font-mono font-bold text-lg tracking-tight">
-            <Scale className="w-5 h-5 text-gold" />
-            <span>TrialAI</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <button onClick={downloadPDF}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-border rounded-lg hover:bg-surface transition-colors">
-              <Download className="w-4 h-4" /> PDF Report
-            </button>
-          </div>
+      {/* PDF Report Bar */}
+      <div className="border-b border-border bg-surface">
+        <div className="max-w-5xl mx-auto px-6 h-12 flex items-center justify-between">
+          <span className="text-sm font-medium text-foreground/60">Trial Verdict — {datasetName}</span>
+          <button onClick={downloadPDF}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-border rounded-lg hover:bg-surface transition-colors">
+            <Download className="w-4 h-4" /> PDF Report
+          </button>
         </div>
-      </nav>
+      </div>
 
       <main className="max-w-4xl mx-auto px-6 py-12">
         <motion.div initial="hidden" animate="show" variants={{ show: { transition: { staggerChildren: 0.1 } } }} className="space-y-10">
@@ -464,6 +461,12 @@ export default function NewTrialVerdictPage() {
 
           {/* Footer Actions */}
           <motion.div variants={FADE_UP} className="flex justify-center gap-4 pt-4 pb-12">
+            <button
+              onClick={() => setFingerprintOpen(true)}
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-lg font-medium text-sm hover:from-violet-700 hover:to-indigo-700 transition-all shadow-md"
+            >
+              <Fingerprint className="w-4 h-4" /> View Bias Fingerprint
+            </button>
             <Link href="/trial/upload"
               className="flex items-center gap-2 px-6 py-3 border border-border rounded-lg font-medium text-sm hover:bg-surface transition-colors">
               <RotateCcw className="w-4 h-4" /> New Trial
@@ -473,6 +476,17 @@ export default function NewTrialVerdictPage() {
               Return to Home
             </Link>
           </motion.div>
+
+          {/* Bias Fingerprint Modal */}
+          <BiasFingerprint
+            open={fingerprintOpen}
+            onClose={() => setFingerprintOpen(false)}
+            datasetName={datasetName}
+            sensitiveAttr={analysis?.sensitive_attributes?.join(", ") || "unknown"}
+            demographicParity={fairnessMetrics.demographic_parity || 0}
+            equalOpportunity={fairnessMetrics.equal_opportunity || 0}
+            disparateImpact={fairnessMetrics.disparate_impact || 0}
+          />
 
         </motion.div>
       </main>
