@@ -120,41 +120,58 @@ export default function UploadPage() {
   const canProceedToConfig = allFilesReady && headers.length > 0;
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-24">
-      {/* Step Indicator */}
-      <div className="border-b border-border bg-surface">
-        <div className="max-w-5xl mx-auto px-6 h-12 flex items-center justify-end gap-3 text-sm font-medium text-foreground/60">
-          <span className={step >= 1 ? "text-foreground" : ""}>1. Upload Evidence</span>
-          <ChevronRight className="w-4 h-4" />
-          <span className={step >= 2 ? "text-foreground" : ""}>2. Configure</span>
+    <div className="relative min-h-screen text-white overflow-hidden selection:bg-gold/30 pb-32 font-sans">
+      {/* Video Background */}
+      <div className="fixed inset-0 w-full h-full z-[-2]">
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          className="w-full h-full object-cover scale-105"
+        >
+          <source src="/landing-video.mp4" type="video/mp4" />
+        </video>
+      </div>
+
+      {/* Cinematic Overlay */}
+      <div className="fixed inset-0 bg-black/40 z-[-1]" />
+      <div className="fixed inset-0 bg-gradient-to-b from-black/10 via-black/50 to-black/90 z-[-1]" />
+
+      {/* Step Indicator (Glassmorphism) */}
+      <div className="fixed top-16 left-0 w-full border-b border-white/10 bg-black/20 backdrop-blur-xl z-40">
+        <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-end gap-5 text-sm font-bold text-white/50 uppercase tracking-widest">
+          <span className={`transition-all ${step >= 1 ? "text-gold drop-shadow-[0_0_10px_rgba(212,175,55,0.8)]" : ""}`}>1. Upload Evidence</span>
+          <ChevronRight className="w-5 h-5 text-white/20" />
+          <span className={`transition-all ${step >= 2 ? "text-gold drop-shadow-[0_0_10px_rgba(212,175,55,0.8)]" : ""}`}>2. Configure</span>
         </div>
       </div>
 
-      <main className="max-w-4xl mx-auto px-6 pt-12">
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Submit Evidence for Trial</h1>
-          <p className="text-foreground/60">Upload your dataset, trained model, and optionally the training script for a complete bias audit.</p>
+      <main className="max-w-4xl mx-auto px-6 pt-40">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12 text-center">
+          <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tight drop-shadow-lg">Submit Evidence for Trial</h1>
+          <p className="text-white/70 text-xl font-light max-w-2xl mx-auto">Upload your dataset, trained model, and optionally the training script for a complete adversarial bias audit.</p>
         </motion.div>
 
         {error && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl flex items-center gap-3 mb-6">
-            <AlertCircle className="w-5 h-5 shrink-0" />
-            <p className="text-sm font-medium">{error}</p>
-            <button onClick={() => setError(null)} className="ml-auto"><X className="w-4 h-4" /></button>
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+            className="bg-red-500/20 backdrop-blur-xl border border-red-500/50 text-red-100 p-5 rounded-2xl flex items-center gap-4 mb-10 shadow-[0_0_40px_rgba(239,68,68,0.2)]">
+            <AlertCircle className="w-6 h-6 shrink-0 text-red-400" />
+            <p className="text-base font-medium">{error}</p>
+            <button onClick={() => setError(null)} className="ml-auto hover:text-white transition-colors"><X className="w-5 h-5" /></button>
           </motion.div>
         )}
 
         {/* Step 1: File Uploads */}
         <AnimatePresence mode="wait">
           {step === 1 && (
-            <motion.div key="step1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-5">
+            <motion.div key="step1" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20, filter: "blur(10px)" }} className="space-y-6">
 
               {/* CSV Upload */}
               <UploadZone
                 label="Dataset"
                 sublabel="CSV file with training/test data"
-                icon={<FileText className="w-6 h-6" />}
+                icon={<FileText className="w-7 h-7" />}
                 file={csvFile}
                 accept=".csv"
                 inputRef={csvInputRef}
@@ -171,7 +188,7 @@ export default function UploadPage() {
               <UploadZone
                 label="Trained Model"
                 sublabel=".pkl or .joblib (sklearn-compatible)"
-                icon={<Cpu className="w-6 h-6" />}
+                icon={<Cpu className="w-7 h-7" />}
                 file={modelFile}
                 accept=".pkl,.joblib,.pickle"
                 inputRef={modelInputRef}
@@ -188,7 +205,7 @@ export default function UploadPage() {
               <UploadZone
                 label="Training Script"
                 sublabel=".py file (optional — enables code analysis & auto-retrain)"
-                icon={<Code2 className="w-6 h-6" />}
+                icon={<Code2 className="w-7 h-7" />}
                 file={scriptFile}
                 accept=".py"
                 inputRef={scriptInputRef}
@@ -197,55 +214,55 @@ export default function UploadPage() {
                 isDragging={isDragging === "script"}
                 onDragStart={() => setIsDragging("script")}
                 onDragEnd={() => setIsDragging(null)}
-                color="amber"
+                color="gold"
               />
 
               {/* Next Button */}
-              <div className="flex justify-end pt-4">
+              <div className="flex justify-end pt-8">
                 <button
                   onClick={() => canProceedToConfig && setStep(2)}
                   disabled={!canProceedToConfig}
-                  className={`flex items-center gap-2 px-8 py-3 rounded-lg font-medium transition-all
+                  className={`flex items-center gap-3 px-12 py-5 rounded-2xl font-black text-lg transition-all
                     ${canProceedToConfig
-                      ? 'bg-foreground text-background hover:bg-foreground/90 shadow-md'
-                      : 'bg-surface border border-border text-foreground/40 cursor-not-allowed'}`}
+                      ? 'bg-gold hover:bg-yellow-500 text-black shadow-[0_0_40px_rgba(212,175,55,0.4)] hover:shadow-[0_0_60px_rgba(212,175,55,0.6)] hover:-translate-y-1'
+                      : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'}`}
                 >
-                  Configure Trial <ChevronRight className="w-5 h-5" />
+                  Configure Trial <ChevronRight className="w-6 h-6" />
                 </button>
               </div>
             </motion.div>
           )}
 
           {step === 2 && (
-            <motion.div key="step2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-8">
+            <motion.div key="step2" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20, filter: "blur(10px)" }} className="space-y-10">
 
               {/* File Summary */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <FileBadge icon={<FileText className="w-4 h-4" />} label="Dataset" name={csvFile!.name} color="blue" />
-                <FileBadge icon={<Cpu className="w-4 h-4" />} label="Model" name={modelFile!.name} color="purple" />
-                <FileBadge icon={<Code2 className="w-4 h-4" />} label="Script" name={scriptFile?.name || "Not provided"} color={scriptFile ? "amber" : "gray"} />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <FileBadge icon={<FileText className="w-5 h-5" />} label="Dataset" name={csvFile!.name} color="blue" />
+                <FileBadge icon={<Cpu className="w-5 h-5" />} label="Model" name={modelFile!.name} color="purple" />
+                <FileBadge icon={<Code2 className="w-5 h-5" />} label="Script" name={scriptFile?.name || "Not provided"} color={scriptFile ? "gold" : "gray"} />
               </div>
 
               {/* Data Preview */}
-              <div className="border border-border rounded-xl overflow-hidden bg-background">
-                <div className="bg-surface px-4 py-3 border-b border-border flex items-center justify-between">
-                  <h3 className="font-semibold text-sm">Data Preview (First 5 Rows)</h3>
-                  <span className="text-xs text-foreground/50">{headers.length} columns</span>
+              <div className="bg-black/40 backdrop-blur-2xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
+                <div className="bg-white/5 px-8 py-5 border-b border-white/10 flex items-center justify-between">
+                  <h3 className="font-bold text-lg text-white tracking-wide">Data Preview (First 5 Rows)</h3>
+                  <span className="text-xs font-mono font-bold text-white/60 bg-white/10 px-4 py-1.5 rounded-full border border-white/5">{headers.length} COLUMNS</span>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm text-left">
-                    <thead className="text-xs uppercase bg-surface/50 text-foreground/60 border-b border-border">
+                    <thead className="text-xs uppercase bg-black/40 text-white/50 border-b border-white/10">
                       <tr>
                         {headers.map((h, i) => (
-                          <th key={i} className="px-4 py-3 font-medium whitespace-nowrap">{h}</th>
+                          <th key={i} className="px-8 py-5 font-black whitespace-nowrap tracking-wider">{h}</th>
                         ))}
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-border">
+                    <tbody className="divide-y divide-white/5">
                       {previewRows.map((row, i) => (
-                        <tr key={i} className="hover:bg-surface/30">
+                        <tr key={i} className="hover:bg-white/5 transition-colors">
                           {row.map((cell, j) => (
-                            <td key={j} className="px-4 py-2 whitespace-nowrap truncate max-w-[150px]">{cell}</td>
+                            <td key={j} className="px-8 py-4 whitespace-nowrap truncate max-w-[200px] text-white/80 font-light">{cell}</td>
                           ))}
                         </tr>
                       ))}
@@ -255,29 +272,29 @@ export default function UploadPage() {
               </div>
 
               {/* Configuration */}
-              <div className="bg-surface border border-border rounded-xl p-6 space-y-8">
+              <div className="bg-black/40 backdrop-blur-2xl border border-white/10 rounded-3xl p-10 space-y-10 shadow-2xl">
                 {/* Sensitive Columns */}
                 <div>
-                  <div className="flex items-center gap-2 mb-3">
-                    <h3 className="font-semibold">Sensitive Attributes</h3>
-                    <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">Auto-detected</span>
+                  <div className="flex items-center gap-4 mb-5">
+                    <h3 className="text-2xl font-black text-white">Sensitive Attributes</h3>
+                    <span className="text-xs bg-gold/20 text-gold border border-gold/30 px-3 py-1 rounded-full font-bold uppercase tracking-widest drop-shadow-[0_0_10px_rgba(212,175,55,0.5)]">Auto-detected</span>
                   </div>
-                  <p className="text-sm text-foreground/60 mb-4">
+                  <p className="text-lg text-white/60 mb-8 font-light">
                     Select the columns that represent protected classes (e.g., race, gender, age). The Prosecution will probe these for bias.
                   </p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-4">
                     {headers.map((h) => {
                       const isSensitive = sensitiveColumns.has(h);
                       return (
                         <button
                           key={h}
                           onClick={() => toggleSensitiveColumn(h)}
-                          className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors flex items-center gap-1.5
+                          className={`px-5 py-3 rounded-xl text-base font-bold border transition-all flex items-center gap-3
                             ${isSensitive
-                              ? 'bg-red-50 border-red-200 text-red-700'
-                              : 'bg-background border-border text-foreground/70 hover:border-foreground/30'}`}
+                              ? 'bg-red-500/20 border-red-500/50 text-red-400 shadow-[0_0_20px_rgba(239,68,68,0.2)]'
+                              : 'bg-white/5 border-white/10 text-white/50 hover:bg-white/10 hover:border-white/30 hover:text-white'}`}
                         >
-                          {isSensitive && <CheckCircle2 className="w-3.5 h-3.5" />}
+                          {isSensitive && <CheckCircle2 className="w-5 h-5" />}
                           {h}
                         </button>
                       );
@@ -285,48 +302,49 @@ export default function UploadPage() {
                   </div>
                 </div>
 
-                <div className="h-px bg-border w-full" />
+                <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent w-full" />
 
                 {/* Target Column */}
                 <div>
-                  <h3 className="font-semibold mb-2">Target Column</h3>
-                  <p className="text-sm text-foreground/60 mb-3">What is your model predicting?</p>
+                  <h3 className="text-2xl font-black text-white mb-3">Target Column</h3>
+                  <p className="text-lg text-white/60 mb-6 font-light">What is your model predicting?</p>
                   <select
                     value={targetColumn}
                     onChange={(e) => setTargetColumn(e.target.value)}
-                    className="w-full max-w-sm bg-background border border-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                    className="w-full max-w-xl bg-black/50 border border-white/20 rounded-2xl px-6 py-4 text-lg text-white focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-all appearance-none cursor-pointer hover:bg-white/5"
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1.5rem center', backgroundSize: '1.5em' }}
                   >
-                    <option value="" disabled>Select target column</option>
-                    {headers.map(h => <option key={h} value={h}>{h}</option>)}
+                    <option value="" disabled className="bg-black text-white/50">Select target column</option>
+                    {headers.map(h => <option key={h} value={h} className="bg-black text-white">{h}</option>)}
                   </select>
                 </div>
               </div>
 
               {/* Actions */}
-              <div className="flex items-center justify-between pt-4">
+              <div className="flex items-center justify-between pt-8">
                 <button
                   onClick={() => setStep(1)}
-                  className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium text-foreground/60 hover:text-foreground transition-colors"
+                  className="flex items-center gap-3 px-8 py-5 rounded-2xl font-bold text-lg text-white/50 hover:text-white hover:bg-white/5 transition-all"
                 >
-                  ← Back
+                  ← Back to Uploads
                 </button>
                 <button
                   onClick={handleBeginTrial}
                   disabled={!targetColumn || sensitiveColumns.size === 0 || isLoading}
-                  className={`flex items-center gap-2 px-8 py-3 rounded-lg font-medium transition-all
+                  className={`flex items-center gap-3 px-12 py-5 rounded-2xl font-black text-lg transition-all
                     ${targetColumn && sensitiveColumns.size > 0 && !isLoading
-                      ? 'bg-foreground text-background hover:bg-foreground/90 shadow-md'
-                      : 'bg-surface border border-border text-foreground/40 cursor-not-allowed'}`}
+                      ? 'bg-gold hover:bg-yellow-500 text-black shadow-[0_0_40px_rgba(212,175,55,0.4)] hover:shadow-[0_0_60px_rgba(212,175,55,0.6)] hover:-translate-y-1'
+                      : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'}`}
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Analyzing with Fairlearn + SHAP...
+                      <Loader2 className="w-6 h-6 animate-spin" />
+                      Summoning Courtroom...
                     </>
                   ) : (
                     <>
                       Begin Trial
-                      <ChevronRight className="w-5 h-5" />
+                      <ChevronRight className="w-6 h-6" />
                     </>
                   )}
                 </button>
@@ -354,53 +372,53 @@ type UploadZoneProps = {
   onDragStart: () => void;
   onDragEnd: () => void;
   required?: boolean;
-  color: "blue" | "purple" | "amber" | "gray";
+  color: "blue" | "purple" | "gold" | "gray";
 };
 
 const colorMap = {
-  blue: { bg: "bg-blue-50", border: "border-blue-200", text: "text-blue-600", icon: "bg-blue-100 text-blue-600", dot: "bg-blue-500" },
-  purple: { bg: "bg-purple-50", border: "border-purple-200", text: "text-purple-600", icon: "bg-purple-100 text-purple-600", dot: "bg-purple-500" },
-  amber: { bg: "bg-amber-50", border: "border-amber-200", text: "text-amber-600", icon: "bg-amber-100 text-amber-600", dot: "bg-amber-500" },
-  gray: { bg: "bg-gray-50", border: "border-gray-200", text: "text-gray-500", icon: "bg-gray-100 text-gray-500", dot: "bg-gray-400" },
+  blue: { bg: "bg-blue-500/10", border: "border-blue-500/30", text: "text-blue-400", icon: "bg-blue-500/20 text-blue-400", shadow: "shadow-[0_0_20px_rgba(59,130,246,0.15)]", dragBorder: "border-blue-500", dragBg: "bg-blue-500/10" },
+  purple: { bg: "bg-purple-500/10", border: "border-purple-500/30", text: "text-purple-400", icon: "bg-purple-500/20 text-purple-400", shadow: "shadow-[0_0_20px_rgba(168,85,247,0.15)]", dragBorder: "border-purple-500", dragBg: "bg-purple-500/10" },
+  gold: { bg: "bg-gold/10", border: "border-gold/30", text: "text-gold", icon: "bg-gold/20 text-gold", shadow: "shadow-[0_0_20px_rgba(212,175,55,0.15)]", dragBorder: "border-gold", dragBg: "bg-gold/10" },
+  gray: { bg: "bg-white/5", border: "border-white/10", text: "text-white/50", icon: "bg-white/10 text-white/50", shadow: "", dragBorder: "border-white/30", dragBg: "bg-white/10" },
 };
 
 function UploadZone({ label, sublabel, icon, file, accept, inputRef, onUpload, onRemove, isDragging, onDragStart, onDragEnd, required, color }: UploadZoneProps) {
   const c = colorMap[color];
   return (
     <div
-      className={`border rounded-xl p-5 transition-all ${file ? `${c.bg} ${c.border}` : isDragging ? `border-${color}-400 bg-${color}-50/50 border-dashed` : 'border-border bg-surface hover:bg-surface/80 border-dashed'}`}
+      className={`border rounded-3xl p-8 transition-all duration-300 backdrop-blur-2xl ${file ? `${c.bg} ${c.border} ${c.shadow}` : isDragging ? `${c.dragBorder} ${c.dragBg} border-dashed scale-[1.02] shadow-2xl` : 'border-white/10 bg-black/40 hover:bg-black/60 hover:border-white/20 border-dashed'}`}
       onDragOver={(e) => { e.preventDefault(); onDragStart(); }}
       onDragLeave={(e) => { e.preventDefault(); onDragEnd(); }}
       onDrop={(e) => { e.preventDefault(); onDragEnd(); if (e.dataTransfer.files?.[0]) onUpload(e.dataTransfer.files[0]); }}
     >
       <input type="file" accept={accept} className="hidden" ref={inputRef as any} onChange={(e) => e.target.files?.[0] && onUpload(e.target.files[0])} />
-      <div className="flex items-center gap-4">
-        <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${file ? c.icon : 'bg-gray-100 text-gray-400'}`}>
+      <div className="flex items-center gap-8">
+        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center border border-white/5 ${file ? c.icon : 'bg-white/5 text-white/40'}`}>
           {icon}
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <h3 className="font-semibold">{label}</h3>
-            {required && <span className="text-xs text-red-500 font-medium">Required</span>}
-            {!required && !file && <span className="text-xs text-foreground/40 font-medium">Optional</span>}
+          <div className="flex items-center gap-3 mb-2">
+            <h3 className="font-black text-xl text-white">{label}</h3>
+            {required && <span className="text-[10px] bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-widest">Required</span>}
+            {!required && !file && <span className="text-[10px] bg-white/10 text-white/40 border border-white/10 px-3 py-1 rounded-full font-bold uppercase tracking-widest">Optional</span>}
           </div>
           {file ? (
-            <p className={`text-sm ${c.text} font-medium truncate`}>
-              <CheckCircle2 className="w-3.5 h-3.5 inline mr-1" />
-              {file.name} ({(file.size / 1024).toFixed(0)} KB)
+            <p className={`text-base ${c.text} font-bold truncate flex items-center gap-2`}>
+              <CheckCircle2 className="w-5 h-5" />
+              {file.name} <span className="text-white/40 font-normal ml-2">({(file.size / 1024).toFixed(0)} KB)</span>
             </p>
           ) : (
-            <p className="text-sm text-foreground/50">{sublabel}</p>
+            <p className="text-base text-white/50 font-light">{sublabel}</p>
           )}
         </div>
         {file ? (
-          <button onClick={onRemove} className="p-2 text-foreground/50 hover:text-red-500 transition-colors rounded-md hover:bg-red-50">
-            <X className="w-5 h-5" />
+          <button onClick={onRemove} className="p-4 text-white/40 hover:text-red-400 transition-all rounded-xl hover:bg-red-500/10 hover:scale-110">
+            <X className="w-6 h-6" />
           </button>
         ) : (
           <button
             onClick={() => (inputRef as any).current?.click()}
-            className="px-4 py-2 text-sm font-medium bg-background border border-border rounded-lg hover:bg-foreground hover:text-background transition-colors"
+            className="px-8 py-4 text-base font-bold bg-white text-black rounded-2xl hover:bg-gray-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] hover:-translate-y-1"
           >
             Browse
           </button>
@@ -413,11 +431,11 @@ function UploadZone({ label, sublabel, icon, file, accept, inputRef, onUpload, o
 function FileBadge({ icon, label, name, color }: { icon: React.ReactNode; label: string; name: string; color: string }) {
   const c = colorMap[color as keyof typeof colorMap] || colorMap.gray;
   return (
-    <div className={`${c.bg} ${c.border} border rounded-lg p-3 flex items-center gap-3`}>
-      <div className={`w-8 h-8 rounded flex items-center justify-center ${c.icon}`}>{icon}</div>
+    <div className={`${c.bg} ${c.border} border rounded-2xl p-5 flex items-center gap-4 backdrop-blur-2xl ${c.shadow}`}>
+      <div className={`w-12 h-12 rounded-xl flex items-center justify-center border border-white/5 ${c.icon}`}>{icon}</div>
       <div className="min-w-0">
-        <p className="text-xs text-foreground/50">{label}</p>
-        <p className="text-sm font-medium truncate">{name}</p>
+        <p className="text-[10px] uppercase tracking-widest text-white/50 font-bold mb-1">{label}</p>
+        <p className="text-base font-bold text-white truncate">{name}</p>
       </div>
     </div>
   );

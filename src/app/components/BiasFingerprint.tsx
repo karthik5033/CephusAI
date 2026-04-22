@@ -40,17 +40,17 @@ interface BiasGFingerprintProps {
 // ─── Risk badge config ──────────────────────────────────────────────────────
 
 const RISK_CONFIG = {
-  LOW:      { bg: "bg-emerald-100", text: "text-emerald-700", border: "border-emerald-300", icon: ShieldCheck, label: "Low Risk" },
-  MODERATE: { bg: "bg-amber-100",   text: "text-amber-700",   border: "border-amber-300",   icon: Shield,      label: "Moderate Risk" },
-  HIGH:     { bg: "bg-orange-100",  text: "text-orange-700",  border: "border-orange-300",  icon: AlertTriangle, label: "High Risk" },
-  CRITICAL: { bg: "bg-red-100",     text: "text-red-700",     border: "border-red-300",     icon: ShieldX,      label: "Critical Risk" },
+  LOW:      { bg: "bg-emerald-500/10", text: "text-emerald-400", border: "border-emerald-500/30", icon: ShieldCheck, label: "Low Risk" },
+  MODERATE: { bg: "bg-gold/10",   text: "text-gold",   border: "border-gold/30",   icon: Shield,      label: "Moderate Risk" },
+  HIGH:     { bg: "bg-orange-500/10",  text: "text-orange-400",  border: "border-orange-500/30",  icon: AlertTriangle, label: "High Risk" },
+  CRITICAL: { bg: "bg-red-500/10",     text: "text-red-400",     border: "border-red-500/30",     icon: ShieldX,      label: "Critical Risk" },
 };
 
 const SCORE_COLOR = (score: number) =>
   score >= 0.7 ? "bg-red-500" : score >= 0.4 ? "bg-amber-500" : "bg-emerald-500";
 
 const SCORE_TEXT = (score: number) =>
-  score >= 0.7 ? "text-red-600" : score >= 0.4 ? "text-amber-600" : "text-emerald-600";
+  score >= 0.7 ? "text-red-400" : score >= 0.4 ? "text-gold" : "text-emerald-400";
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
@@ -235,7 +235,7 @@ export default function BiasFingerprint({
         >
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/80 backdrop-blur-md"
             onClick={onClose}
           />
 
@@ -245,17 +245,17 @@ export default function BiasFingerprint({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="relative z-10 w-full max-w-4xl max-h-[90vh] bg-white rounded-2xl shadow-2xl border border-border overflow-hidden flex flex-col"
+            className="relative z-10 w-full max-w-4xl max-h-[90vh] bg-black/60 backdrop-blur-3xl rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-white/10 overflow-hidden flex flex-col"
           >
             {/* ── Header ── */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-surface/50">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/[0.03]">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-foreground flex items-center justify-center">
                   <ShieldAlert className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-foreground">Bias Fingerprint</h2>
-                  <p className="text-xs text-foreground/50">{datasetName} — {sensitiveAttr}</p>
+                  <h2 className="text-lg font-bold text-white">Bias Fingerprint</h2>
+                  <p className="text-xs text-white/50">{datasetName} — {sensitiveAttr}</p>
                 </div>
               </div>
 
@@ -268,9 +268,9 @@ export default function BiasFingerprint({
                 )}
                 <button
                   onClick={onClose}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-gray-100 transition-colors"
+                  className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-white/10 transition-colors"
                 >
-                  <X className="w-4 h-4 text-foreground/60" />
+                  <X className="w-4 h-4 text-white/60" />
                 </button>
               </div>
             </div>
@@ -279,10 +279,10 @@ export default function BiasFingerprint({
             <div className="flex-1 overflow-y-auto px-6 py-6">
               {loading && (
                 <div className="flex flex-col items-center justify-center py-20 gap-4">
-                  <Loader2 className="w-10 h-10 text-foreground/40 animate-spin" />
+                  <Loader2 className="w-10 h-10 text-white/40 animate-spin" />
                   <div className="text-center">
-                    <p className="text-sm font-semibold text-foreground/70">Generating Bias Fingerprint…</p>
-                    <p className="text-xs text-foreground/40 mt-1">Analyzing 6 bias dimensions with AI</p>
+                    <p className="text-sm font-semibold text-white/70">Generating Bias Fingerprint…</p>
+                    <p className="text-xs text-white/40 mt-1">Analyzing 6 bias dimensions with AI</p>
                   </div>
                 </div>
               )}
@@ -290,10 +290,10 @@ export default function BiasFingerprint({
               {error && (
                 <div className="flex flex-col items-center justify-center py-20 gap-4">
                   <ShieldX className="w-10 h-10 text-red-400" />
-                  <p className="text-sm text-red-600 font-medium">{error}</p>
+                  <p className="text-sm text-red-400 font-medium">{error}</p>
                   <button
                     onClick={fetchFingerprint}
-                    className="px-4 py-2 text-sm font-medium bg-foreground text-white rounded-lg hover:bg-foreground/90 transition-colors"
+                    className="px-4 py-2 text-sm font-medium bg-white text-black rounded-lg hover:bg-white/90 transition-colors"
                   >
                     Retry
                   </button>
@@ -304,28 +304,28 @@ export default function BiasFingerprint({
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   {/* ── Left: Radar Chart + Summary ── */}
                   <div className="space-y-6">
-                    <div className="bg-surface border border-border rounded-xl p-5">
-                      <h3 className="text-sm font-semibold text-foreground mb-4">Radar Profile</h3>
+                    <div className="bg-white/[0.03] border border-white/10 rounded-xl p-5">
+                      <h3 className="text-sm font-semibold text-white mb-4">Radar Profile</h3>
                       <div className="h-[280px]">
                         <ResponsiveContainer width="100%" height="100%">
                           <RadarChart cx="50%" cy="50%" outerRadius="75%" data={radarData}>
-                            <PolarGrid stroke="#E2E8F0" />
+                            <PolarGrid stroke="#ffffff1a" />
                             <PolarAngleAxis
                               dataKey="dimension"
-                              tick={{ fontSize: 11, fill: "#64748B" }}
+                              tick={{ fontSize: 11, fill: "#ffffff66" }}
                             />
                             <PolarRadiusAxis
                               angle={30}
                               domain={[0, 100]}
-                              tick={{ fontSize: 9, fill: "#94A3B8" }}
+                              tick={{ fontSize: 9, fill: "#ffffff4d" }}
                               tickCount={5}
                             />
                             <Tooltip
                               contentStyle={{
                                 borderRadius: "8px",
                                 fontSize: "12px",
-                                background: "white",
-                                border: "1px solid #E2E8F0",
+                                background: "rgba(0,0,0,0.8)", backdropFilter: "blur(10px)",
+                                border: "1px solid #ffffff1a",
                               }}
                               formatter={(value: any) => [`${value}%`, "Bias Score"]}
                             />
@@ -343,9 +343,9 @@ export default function BiasFingerprint({
                     </div>
 
                     {/* Summary */}
-                    <div className="bg-surface border border-border rounded-xl p-5">
-                      <h3 className="text-sm font-semibold text-foreground mb-2">Analysis Summary</h3>
-                      <p className="text-sm text-foreground/70 leading-relaxed">
+                    <div className="bg-white/[0.03] border border-white/10 rounded-xl p-5">
+                      <h3 className="text-sm font-semibold text-white mb-2">Analysis Summary</h3>
+                      <p className="text-sm text-white/70 leading-relaxed">
                         {fingerprint.summary}
                       </p>
                     </div>
@@ -353,17 +353,17 @@ export default function BiasFingerprint({
 
                   {/* ── Right: Dimension Rows ── */}
                   <div className="space-y-3">
-                    <h3 className="text-sm font-semibold text-foreground mb-1">Dimension Breakdown</h3>
+                    <h3 className="text-sm font-semibold text-white mb-1">Dimension Breakdown</h3>
                     {fingerprint.dimensions.map((dim, i) => (
                       <motion.div
                         key={dim.dimension}
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: i * 0.08 }}
-                        className="bg-surface border border-border rounded-xl p-4"
+                        className="bg-white/[0.03] border border-white/10 rounded-xl p-4"
                       >
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm font-semibold text-foreground">
+                          <span className="text-sm font-semibold text-white">
                             {dim.dimension}
                           </span>
                           <span className={`text-sm font-bold ${SCORE_TEXT(dim.score)}`}>
@@ -372,7 +372,7 @@ export default function BiasFingerprint({
                         </div>
 
                         {/* Progress bar */}
-                        <div className="w-full h-2 rounded-full bg-gray-200 overflow-hidden mb-2.5">
+                        <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden mb-2.5">
                           <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: `${dim.score * 100}%` }}
@@ -381,7 +381,7 @@ export default function BiasFingerprint({
                           />
                         </div>
 
-                        <p className="text-xs text-foreground/55 leading-relaxed">
+                        <p className="text-xs text-white/50 leading-relaxed">
                           {dim.finding}
                         </p>
                       </motion.div>
@@ -393,17 +393,17 @@ export default function BiasFingerprint({
 
             {/* ── Footer ── */}
             {fingerprint && !loading && (
-              <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border bg-surface/30">
+              <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-white/10 bg-white/[0.02]">
                 <button
                   onClick={downloadCertificate}
-                  className="flex items-center gap-2 px-5 py-2.5 bg-foreground text-white rounded-lg text-sm font-semibold hover:bg-foreground/90 transition-colors shadow-sm"
+                  className="flex items-center gap-2 px-5 py-2.5 bg-white text-black rounded-lg text-sm font-semibold hover:bg-white/90 transition-colors shadow-sm"
                 >
                   <Download className="w-4 h-4" />
                   Download Certificate
                 </button>
                 <button
                   onClick={onClose}
-                  className="flex items-center gap-2 px-5 py-2.5 border border-border rounded-lg text-sm font-medium hover:bg-surface transition-colors"
+                  className="flex items-center gap-2 px-5 py-2.5 border border-white/10 rounded-lg text-sm font-medium hover:bg-white/[0.03] transition-colors"
                 >
                   Close
                 </button>

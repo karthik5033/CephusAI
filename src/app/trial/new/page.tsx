@@ -477,56 +477,66 @@ export default function NewTrialPage() {
 
   const getAgentStyles = (role: string) => {
     switch (role) {
-      case "PROSECUTION": return { color: "text-red-600", bg: "bg-red-100", border: "border-red-200", icon: Scale };
-      case "DEFENSE": return { color: "text-blue-600", bg: "bg-blue-100", border: "border-blue-200", icon: Shield };
-      case "JUDGE": return { color: "text-amber-600", bg: "bg-amber-100", border: "border-amber-200", icon: Gavel };
-      case "DEFENDANT": return { color: "text-gray-600", bg: "bg-gray-100", border: "border-gray-200", icon: Bot };
-      default: return { color: "text-gray-600", bg: "bg-gray-100", border: "border-gray-200", icon: User };
+      case "PROSECUTION": return { color: "text-white", bg: "bg-white/5", border: "border-white/10", icon: Scale };
+      case "DEFENSE": return { color: "text-white", bg: "bg-white/5", border: "border-white/10", icon: Shield };
+      case "JUDGE": return { color: "text-white", bg: "bg-white/10", border: "border-white/20", icon: Gavel };
+      case "DEFENDANT": return { color: "text-white/60", bg: "transparent", border: "border-white/5", icon: Bot };
+      default: return { color: "text-white/60", bg: "transparent", border: "border-white/5", icon: User };
     }
   };
 
+
   return (
-    <div className="h-[calc(100vh-65px)] w-full bg-background text-foreground flex flex-col overflow-hidden font-sans">
+    <div className="relative h-screen w-full text-white flex flex-col overflow-hidden font-sans selection:bg-gold/30 pt-16">
       
+
+      {/* Video Background */}
+      <div className="fixed inset-0 w-full h-full z-[-2]">
+        <video autoPlay loop muted playsInline className="w-full h-full object-cover scale-105">
+          <source src="/scales-video.mp4" type="video/mp4" />
+        </video>
+      </div>
+      <div className="fixed inset-0 bg-black/60 z-[-1]" />
+
       {/* MAIN CONTENT (3 COLUMNS) */}
       <div className="flex-1 flex overflow-hidden min-h-0">
         
         {/* LEFT PANEL: Case File */}
-        <div className={`${leftCollapsed ? 'w-[48px]' : 'w-[300px]'} border-r border-border bg-surface/50 flex flex-col overflow-hidden transition-all duration-300 shrink-0`}>
+        <div className={`${leftCollapsed ? 'w-[48px]' : 'w-[300px]'} border-r border-white/10 bg-black/40 backdrop-blur-2xl flex flex-col overflow-hidden transition-all duration-300 shrink-0`}>
           <div className={`flex items-center ${leftCollapsed ? 'justify-center p-3' : 'justify-between p-6 pb-0 mb-6'}`}>
             {!leftCollapsed && (
               <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-blue-600" />
+                <FileText className="w-5 h-5 text-blue-400" />
                 <h2 className="font-bold text-lg">Case File</h2>
               </div>
             )}
-            <button onClick={() => setLeftCollapsed(!leftCollapsed)} className="p-1 rounded-md hover:bg-background transition-colors" title={leftCollapsed ? 'Expand Case File' : 'Collapse Case File'}>
-              {leftCollapsed ? <ChevronRight className="w-4 h-4 text-foreground/50" /> : <PanelLeftClose className="w-4 h-4 text-foreground/50" />}
+            <button onClick={() => setLeftCollapsed(!leftCollapsed)} className="p-1 rounded-md hover:bg-black/40 backdrop-blur-2xl transition-colors" title={leftCollapsed ? 'Expand Case File' : 'Collapse Case File'}>
+              {leftCollapsed ? <ChevronRight className="w-4 h-4 text-white/50" /> : <PanelLeftClose className="w-4 h-4 text-white/50" />}
             </button>
           </div>
           {leftCollapsed ? (
             <div className="flex flex-col items-center gap-4 mt-4">
-              <FileText className="w-4 h-4 text-foreground/30" />
-              <Scale className="w-4 h-4 text-foreground/30" />
+              <FileText className="w-4 h-4 text-white/30" />
+              <Scale className="w-4 h-4 text-white/30" />
             </div>
           ) : (
-          <div className="px-6 pb-6 overflow-y-auto flex-1">
+          <div className="px-6 pb-6 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] flex-1">
 
           <div className="space-y-6">
             <div>
-              <p className="text-xs text-foreground/50 font-bold uppercase mb-1">Dataset</p>
+              <p className="text-xs text-white/50 font-bold uppercase mb-1">Dataset</p>
               <p className="font-medium">{datasetName}</p>
-              <div className="flex items-center gap-4 mt-2 text-sm text-foreground/70">
+              <div className="flex items-center gap-4 mt-2 text-sm text-white/70">
                 <span>{datasetRows.toLocaleString()} Rows</span>
                 <span>{datasetFeatures} Features</span>
               </div>
             </div>
 
             <div>
-              <p className="text-xs text-foreground/50 font-bold uppercase mb-2">Sensitive Attributes</p>
+              <p className="text-xs text-white/50 font-bold uppercase mb-2">Sensitive Attributes</p>
               <div className="flex flex-wrap gap-2">
                 {sensitiveAttrs.map(attr => (
-                  <span key={attr} className="px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded border border-red-200 capitalize">
+                  <span key={attr} className="px-2 py-1 bg-red-500/20 text-white text-xs font-medium rounded border border-red-500/30 capitalize">
                     {attr}
                   </span>
                 ))}
@@ -534,34 +544,34 @@ export default function NewTrialPage() {
             </div>
 
             <div>
-              <p className="text-xs text-foreground/50 font-bold uppercase mb-1">Model Profile</p>
+              <p className="text-xs text-white/50 font-bold uppercase mb-1">Model Profile</p>
               <p className="font-medium text-sm">{modelType}</p>
-              <p className="text-sm text-green-600 font-medium mt-1">Accuracy: {(modelAccuracy * 100).toFixed(1)}%</p>
+              <p className="text-sm text-white font-medium mt-1">Accuracy: {(modelAccuracy * 100).toFixed(1)}%</p>
             </div>
 
-            <div className="pt-4 border-t border-border">
-              <p className="text-xs text-foreground/50 font-bold uppercase mb-3">Bias Risk Score</p>
+            <div className="pt-4 border-t border-white/10">
+              <p className="text-xs text-white/50 font-bold uppercase mb-3">Bias Risk Score</p>
               <div className="flex items-center gap-4">
                 <div className={`w-14 h-14 shrink-0 rounded-full flex items-center justify-center border-4 ${
-                  targetBiasScore <= 30 ? 'border-green-500 text-green-600' : 
-                  targetBiasScore <= 60 ? 'border-amber-500 text-amber-600' : 'border-red-500 text-red-600'
+                  targetBiasScore <= 30 ? 'border-green-500 text-white' : 
+                  targetBiasScore <= 60 ? 'border-amber-500 text-white' : 'border-red-500 text-white'
                 }`}>
                   <span className="text-xl font-bold">{animatedBiasScore}</span>
                 </div>
                 <div>
                   <p className={`font-bold text-sm ${
-                    targetBiasScore <= 30 ? 'text-green-600' : 
-                    targetBiasScore <= 60 ? 'text-amber-600' : 'text-red-600'
+                    targetBiasScore <= 30 ? 'text-white' : 
+                    targetBiasScore <= 60 ? 'text-white' : 'text-white'
                   }`}>
                     {targetBiasScore <= 30 ? 'LOW RISK' : targetBiasScore <= 60 ? 'MODERATE RISK' : 'HIGH RISK'}
                   </p>
-                  <p className="text-xs text-foreground/60 mt-1 leading-tight">Aggregate risk across metrics.</p>
+                  <p className="text-xs text-white/60 mt-1 leading-tight">Aggregate risk across metrics.</p>
                 </div>
               </div>
             </div>
 
-            <div className="pt-4 border-t border-border">
-              <p className="text-xs text-foreground/50 font-bold uppercase mb-4">Demographic Breakdown</p>
+            <div className="pt-4 border-t border-white/10">
+              <p className="text-xs text-white/50 font-bold uppercase mb-4">Demographic Breakdown</p>
               <div className="h-[200px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
@@ -589,7 +599,7 @@ export default function NewTrialPage() {
                       <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: d.color }} />
                       <span className="capitalize">{d.name}</span>
                     </div>
-                    <span className="font-mono text-foreground/60">{d.value.toLocaleString()}</span>
+                    <span className="font-mono text-white/60">{d.value.toLocaleString()}</span>
                   </div>
                 ))}
               </div>
@@ -600,37 +610,37 @@ export default function NewTrialPage() {
         </div>
 
         {/* CENTER PANEL: Courtroom */}
-        <div className="flex-1 flex flex-col bg-background relative overflow-hidden">
+        <div className="flex-1 flex flex-col bg-transparent relative overflow-hidden">
           {/* Top Bar */}
-          <div className="h-16 border-b border-border flex items-center px-6 justify-between bg-surface/80 backdrop-blur z-10 shrink-0">
+          <div className="h-16 border-b border-white/10 flex items-center px-6 justify-between bg-black/40 backdrop-blur-2xl z-10 shrink-0">
             <div>
               <h1 className="font-bold text-lg tracking-tight flex items-center gap-2">
                 Live Trial
-                <span className="text-xs px-2 py-0.5 bg-red-100 text-red-600 rounded-full font-bold uppercase">Live</span>
+                <span className="text-xs px-2 py-0.5 bg-red-500/20 text-white rounded-full font-bold uppercase">Live</span>
               </h1>
             </div>
             <div className="flex items-center gap-2 text-sm font-medium">
-              <span className={currentChargeIndex === 0 && !trialComplete ? "text-foreground font-bold" : "text-foreground/40"}>Opening</span>
-              <ChevronRight className="w-4 h-4 text-foreground/40" />
-              <span className={currentChargeIndex === 1 && !trialComplete ? "text-foreground font-bold" : "text-foreground/40"}>Examination</span>
-              <ChevronRight className="w-4 h-4 text-foreground/40" />
-              <span className={currentChargeIndex === 2 && !trialComplete ? "text-foreground font-bold" : "text-foreground/40"}>Cross-Examination</span>
-              <ChevronRight className="w-4 h-4 text-foreground/40" />
-              <span className={trialComplete ? "text-foreground font-bold" : "text-foreground/40"}>Verdict</span>
+              <span className={currentChargeIndex === 0 && !trialComplete ? "text-white font-bold" : "text-white/40"}>Opening</span>
+              <ChevronRight className="w-4 h-4 text-white/40" />
+              <span className={currentChargeIndex === 1 && !trialComplete ? "text-white font-bold" : "text-white/40"}>Examination</span>
+              <ChevronRight className="w-4 h-4 text-white/40" />
+              <span className={currentChargeIndex === 2 && !trialComplete ? "text-white font-bold" : "text-white/40"}>Cross-Examination</span>
+              <ChevronRight className="w-4 h-4 text-white/40" />
+              <span className={trialComplete ? "text-white font-bold" : "text-white/40"}>Verdict</span>
             </div>
           </div>
 
           {/* Current Charge Banner */}
-          <div className="bg-red-50 border-b border-red-200 px-6 py-3 flex items-center justify-between shrink-0 z-10">
+          <div className="bg-white/5 border-b border-white/10 px-6 py-4 flex items-center justify-between shrink-0 z-10 backdrop-blur-md">
             <div className="flex items-center gap-3">
-              <AlertTriangle className="w-5 h-5 text-red-600" />
-              <span className="font-semibold text-sm text-red-800">Charge #{currentChargeIndex + 1}: {CHARGES[currentChargeIndex]}</span>
+              <AlertTriangle className="w-5 h-5 text-white" />
+              <span className="font-semibold text-sm text-red-300">Charge #{currentChargeIndex + 1}: {CHARGES[currentChargeIndex]}</span>
             </div>
-            {!trialComplete && <span className="text-xs font-mono text-red-600 uppercase tracking-wider font-semibold animate-pulse">Under Review</span>}
+            {!trialComplete && <span className="text-xs font-mono text-white uppercase tracking-wider font-semibold animate-pulse">Under Review</span>}
           </div>
 
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-8 space-y-6" ref={scrollRef}>
+          <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] p-8 space-y-6" ref={scrollRef}>
             <AnimatePresence>
               {messages.map((msg) => {
                 const style = getAgentStyles(msg.role);
@@ -645,18 +655,18 @@ export default function NewTrialPage() {
                     <div className={`w-10 h-10 rounded-full ${style.bg} border ${style.border} flex items-center justify-center shrink-0`}>
                       <Icon className={`w-5 h-5 ${style.color}`} />
                     </div>
-                    <div className="flex-1 bg-surface border border-border p-5 rounded-2xl rounded-tl-sm shadow-sm">
+                    <div className="flex-1 bg-black/40 backdrop-blur-2xl border border-white/5 p-6 rounded-2xl shadow-2xl bg-black/40">
                       <div className="flex items-center gap-2 mb-2">
                         <span className={`text-xs font-bold ${style.color}`}>{msg.role}</span>
-                        <span className="text-xs text-foreground/50 font-mono border-l border-border pl-2">{msg.name}</span>
+                        <span className="text-xs text-white/50 font-mono border-l border-white/10 pl-2">{msg.name}</span>
                       </div>
                       
                       {msg.isThinking ? (
-                        <div className="flex items-center gap-2 text-foreground/50 text-sm py-2">
+                        <div className="flex items-center gap-2 text-white/50 text-sm py-2">
                           <Loader2 className="w-4 h-4 animate-spin" /> Thinking...
                         </div>
                       ) : (
-                        <p className="text-[15px] leading-relaxed text-foreground/90 whitespace-pre-wrap">{msg.text}</p>
+                        <p className="text-[15px] leading-relaxed text-white/90 whitespace-pre-wrap">{msg.text}</p>
                       )}
 
                     </div>
@@ -676,27 +686,27 @@ export default function NewTrialPage() {
         </div>
 
         {/* RIGHT PANEL: Evidence Board */}
-        <div className={`${rightCollapsed ? 'w-[48px]' : 'w-[380px]'} border-l border-border bg-surface/50 flex flex-col shrink-0 transition-all duration-300 overflow-hidden`}>
-          <div className={`border-b border-border bg-background ${rightCollapsed ? 'p-3 flex justify-center' : 'p-4'}`}>
+        <div className={`${rightCollapsed ? 'w-[48px]' : 'w-[380px]'} border-l border-white/10 bg-black/40 backdrop-blur-2xl flex flex-col shrink-0 transition-all duration-300 overflow-hidden`}>
+          <div className={`border-b border-white/10 bg-black/40 backdrop-blur-2xl ${rightCollapsed ? 'p-3 flex justify-center' : 'p-4'}`}>
             {rightCollapsed ? (
-              <button onClick={() => setRightCollapsed(false)} className="p-1 rounded-md hover:bg-surface transition-colors" title="Expand Evidence Board">
-                <ChevronLeft className="w-4 h-4 text-foreground/50" />
+              <button onClick={() => setRightCollapsed(false)} className="p-1 rounded-md hover:bg-black/40 backdrop-blur-2xl transition-colors" title="Expand Evidence Board">
+                <ChevronLeft className="w-4 h-4 text-white/50" />
               </button>
             ) : (
               <>
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="font-bold">Evidence Board</h2>
-                  <button onClick={() => setRightCollapsed(true)} className="p-1 rounded-md hover:bg-surface transition-colors" title="Collapse Evidence Board">
-                    <PanelRightClose className="w-4 h-4 text-foreground/50" />
+                  <button onClick={() => setRightCollapsed(true)} className="p-1 rounded-md hover:bg-black/40 backdrop-blur-2xl transition-colors" title="Collapse Evidence Board">
+                    <PanelRightClose className="w-4 h-4 text-white/50" />
                   </button>
                 </div>
-                <div className="flex gap-2 bg-surface p-1 rounded-lg border border-border">
+                <div className="flex gap-2 bg-black/40 backdrop-blur-2xl p-1 rounded-lg border border-white/10">
                   {(["Fairness", "Features", "Code", "Proxies", "Counterfactuals"] as const).map(tab => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
                       className={`flex-1 text-xs font-medium py-1.5 rounded-md transition-colors ${
-                        activeTab === tab ? "bg-background shadow-sm text-foreground" : "text-foreground/60 hover:text-foreground"
+                        activeTab === tab ? "bg-black/40 backdrop-blur-2xl shadow-sm text-white" : "text-white/60 hover:text-white"
                       }`}
                     >
                       {tab}
@@ -707,14 +717,14 @@ export default function NewTrialPage() {
             )}
           </div>
           {!rightCollapsed && (
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] p-4">
             {analysisLoading ? (
               <div className="space-y-4 animate-pulse">
                 {[1, 2, 3].map(i => (
-                  <div key={i} className="p-4 bg-background border border-border rounded-xl">
-                    <div className="h-4 bg-gray-200 rounded w-1/2 mb-3" />
-                    <div className="h-8 bg-gray-200 rounded w-1/4 mb-2" />
-                    <div className="h-3 bg-gray-100 rounded w-full" />
+                  <div key={i} className="p-4 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-xl">
+                    <div className="h-4 bg-white/20 rounded w-1/2 mb-3" />
+                    <div className="h-8 bg-white/20 rounded w-1/4 mb-2" />
+                    <div className="h-3 bg-white/10 rounded w-full" />
                   </div>
                 ))}
               </div>
@@ -722,31 +732,31 @@ export default function NewTrialPage() {
             <>
             {activeTab === "Fairness" && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
-                <div className="p-4 bg-background border border-border rounded-xl">
+                <div className="p-4 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-xl">
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="text-sm font-semibold">Demographic Parity</h3>
                     <AlertTriangle className={`w-4 h-4 ${fairnessMetrics.demographicParity < 0.8 ? 'text-red-500' : 'text-green-500'}`} />
                   </div>
-                  <div className={`text-3xl font-bold mb-1 ${fairnessMetrics.demographicParity < 0.7 ? 'text-red-600' : fairnessMetrics.demographicParity < 0.8 ? 'text-amber-600' : 'text-green-600'}`}>{fairnessMetrics.demographicParity}</div>
-                  <p className="text-xs text-foreground/60">{fairnessMetrics.demographicParity < 0.8 ? 'Severe violation (Threshold: >0.80). Outcomes are disproportionate.' : 'Within acceptable threshold.'}</p>
+                  <div className="text-4xl font-light tracking-tight mb-1 text-white">{fairnessMetrics.demographicParity}</div>
+                  <p className="text-xs text-white/60">{fairnessMetrics.demographicParity < 0.8 ? 'Severe violation (Threshold: >0.80). Outcomes are disproportionate.' : 'Within acceptable threshold.'}</p>
                 </div>
                 
-                <div className="p-4 bg-background border border-border rounded-xl">
+                <div className="p-4 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-xl">
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="text-sm font-semibold">Equal Opportunity</h3>
                     <AlertTriangle className={`w-4 h-4 ${fairnessMetrics.equalOpportunity < 0.8 ? 'text-amber-500' : 'text-green-500'}`} />
                   </div>
-                  <div className={`text-3xl font-bold mb-1 ${fairnessMetrics.equalOpportunity < 0.7 ? 'text-red-600' : fairnessMetrics.equalOpportunity < 0.8 ? 'text-amber-600' : 'text-green-600'}`}>{fairnessMetrics.equalOpportunity}</div>
-                  <p className="text-xs text-foreground/60">{fairnessMetrics.equalOpportunity < 0.8 ? 'Moderate violation. True positive rates differ significantly across demographic groups.' : 'Within acceptable threshold.'}</p>
+                  <div className="text-4xl font-light tracking-tight mb-1 text-white">{fairnessMetrics.equalOpportunity}</div>
+                  <p className="text-xs text-white/60">{fairnessMetrics.equalOpportunity < 0.8 ? 'Moderate violation. True positive rates differ significantly across demographic groups.' : 'Within acceptable threshold.'}</p>
                 </div>
 
-                <div className="p-4 bg-background border border-border rounded-xl">
+                <div className="p-4 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-xl">
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="text-sm font-semibold">Disparate Impact</h3>
                     <AlertTriangle className={`w-4 h-4 ${fairnessMetrics.disparateImpact < 0.8 ? 'text-red-500' : 'text-green-500'}`} />
                   </div>
-                  <div className={`text-3xl font-bold mb-1 ${fairnessMetrics.disparateImpact < 0.7 ? 'text-red-600' : fairnessMetrics.disparateImpact < 0.8 ? 'text-amber-600' : 'text-green-600'}`}>{fairnessMetrics.disparateImpact}</div>
-                  <p className="text-xs text-foreground/60">{fairnessMetrics.disparateImpact < 0.8 ? 'Severe violation. Structural bias detected in the underlying dataset distributions.' : 'Within acceptable threshold.'}</p>
+                  <div className="text-4xl font-light tracking-tight mb-1 text-white">{fairnessMetrics.disparateImpact}</div>
+                  <p className="text-xs text-white/60">{fairnessMetrics.disparateImpact < 0.8 ? 'Severe violation. Structural bias detected in the underlying dataset distributions.' : 'Within acceptable threshold.'}</p>
                 </div>
               </motion.div>
             )}
@@ -775,14 +785,14 @@ export default function NewTrialPage() {
             {activeTab === "Counterfactuals" && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
                 {COUNTERFACTUALS.map(cf => (
-                  <div key={cf.id} className="bg-background border border-border p-3 rounded-lg text-sm">
-                    <p className="text-xs font-mono text-blue-600 bg-blue-50 inline-block px-1 rounded mb-2">{cf.attr}</p>
+                  <div key={cf.id} className="bg-black/40 backdrop-blur-2xl border border-white/10 p-3 rounded-lg text-sm">
+                    <p className="text-xs font-mono text-blue-400 bg-blue-500/10 inline-block px-1 rounded mb-2">{cf.attr}</p>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-foreground/60 line-through">{cf.original}</span>
-                      <ArrowRight className="w-3 h-3 mx-2 text-foreground/40" />
+                      <span className="text-white/60 line-through">{cf.original}</span>
+                      <ArrowRight className="w-3 h-3 mx-2 text-white/40" />
                       <span className="font-semibold">{cf.flipped}</span>
                     </div>
-                    <p className="text-xs text-amber-600 mt-2 bg-amber-50 px-2 py-1 rounded">{cf.change}</p>
+                    <p className="text-xs text-white mt-2 bg-gold/10 px-2 py-1 rounded">{cf.change}</p>
                   </div>
                 ))}
               </motion.div>
@@ -793,30 +803,30 @@ export default function NewTrialPage() {
                 {codeAnalysis ? (
                   <>
                     <div className={`p-4 rounded-xl border ${
-                      codeAnalysis.risk_level === 'HIGH' ? 'bg-red-50 border-red-200' :
-                      codeAnalysis.risk_level === 'MODERATE' ? 'bg-amber-50 border-amber-200' : 'bg-green-50 border-green-200'
+                      codeAnalysis.risk_level === 'HIGH' ? 'bg-red-500/10 border-red-500/30' :
+                      codeAnalysis.risk_level === 'MODERATE' ? 'bg-gold/10 border-gold/30' : 'bg-green-500/10 border-green-500/30'
                     }`}>
                       <div className="flex items-center gap-2 mb-2">
                         <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                          codeAnalysis.risk_level === 'HIGH' ? 'bg-red-200 text-red-800' :
+                          codeAnalysis.risk_level === 'HIGH' ? 'bg-red-200 text-red-300' :
                           codeAnalysis.risk_level === 'MODERATE' ? 'bg-amber-200 text-amber-800' : 'bg-green-200 text-green-800'
                         }`}>{codeAnalysis.risk_level} RISK</span>
-                        <span className="text-xs text-foreground/50">Model: {codeAnalysis.model_type_detected || modelType}</span>
+                        <span className="text-xs text-white/50">Model: {codeAnalysis.model_type_detected || modelType}</span>
                       </div>
                       <div className="flex gap-4 text-xs mt-2">
-                        <span className={codeAnalysis.has_class_balancing ? 'text-green-600' : 'text-red-600'}>
+                        <span className={codeAnalysis.has_class_balancing ? 'text-white' : 'text-white'}>
                           {codeAnalysis.has_class_balancing ? '✓' : '✗'} Class Balancing
                         </span>
-                        <span className={!codeAnalysis.uses_sensitive_features ? 'text-green-600' : 'text-amber-600'}>
+                        <span className={!codeAnalysis.uses_sensitive_features ? 'text-white' : 'text-white'}>
                           {!codeAnalysis.uses_sensitive_features ? '✓' : '⚠'} Sensitive Features
                         </span>
                       </div>
                     </div>
                     {codeAnalysis.issues?.length > 0 && (
                       <div className="space-y-2">
-                        <h4 className="text-xs font-bold uppercase text-foreground/50">Issues Found</h4>
+                        <h4 className="text-xs font-bold uppercase text-white/50">Issues Found</h4>
                         {codeAnalysis.issues.map((issue: string, i: number) => (
-                          <div key={i} className="p-3 bg-background border border-border rounded-lg text-sm flex items-start gap-2">
+                          <div key={i} className="p-3 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-lg text-sm flex items-start gap-2">
                             <XCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
                             <span>{issue}</span>
                           </div>
@@ -825,9 +835,9 @@ export default function NewTrialPage() {
                     )}
                     {codeAnalysis.recommendations?.length > 0 && (
                       <div className="space-y-2">
-                        <h4 className="text-xs font-bold uppercase text-foreground/50">Recommendations</h4>
+                        <h4 className="text-xs font-bold uppercase text-white/50">Recommendations</h4>
                         {codeAnalysis.recommendations.map((rec: string, i: number) => (
-                          <div key={i} className="p-3 bg-background border border-border rounded-lg text-sm flex items-start gap-2">
+                          <div key={i} className="p-3 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-lg text-sm flex items-start gap-2">
                             <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
                             <span>{rec}</span>
                           </div>
@@ -836,7 +846,7 @@ export default function NewTrialPage() {
                     )}
                   </>
                 ) : (
-                  <div className="p-6 text-center text-foreground/50 text-sm">
+                  <div className="p-6 text-center text-white/50 text-sm">
                     <p className="mb-1">No training script was uploaded.</p>
                     <p className="text-xs">Upload a .py training script to enable LLM code analysis.</p>
                   </div>
@@ -847,25 +857,25 @@ export default function NewTrialPage() {
             {activeTab === "Proxies" && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
                 <h3 className="text-sm font-semibold">Proxy Variable Detection</h3>
-                <p className="text-xs text-foreground/60 mb-2">Features correlated (&gt;0.25) with sensitive attributes may act as proxies for protected classes.</p>
+                <p className="text-xs text-white/60 mb-2">Features correlated (&gt;0.25) with sensitive attributes may act as proxies for protected classes.</p>
                 {proxyFeatures.length > 0 ? (
                   proxyFeatures.map((pf, i) => (
-                    <div key={i} className="p-3 bg-background border border-border rounded-lg">
+                    <div key={i} className="p-3 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-lg">
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm font-semibold">{pf.feature}</span>
                         <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                          pf.correlation > 0.5 ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
+                          pf.correlation > 0.5 ? 'bg-red-500/20 text-white' : 'bg-gold/20 text-amber-700'
                         }`}>{(pf.correlation * 100).toFixed(0)}% correlated</span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-1.5">
+                      <div className="w-full bg-white/20 rounded-full h-1.5">
                         <div className={`h-1.5 rounded-full ${pf.correlation > 0.5 ? 'bg-red-500' : 'bg-amber-500'}`}
                           style={{ width: `${pf.correlation * 100}%` }} />
                       </div>
-                      <p className="text-xs text-foreground/50 mt-1">Correlated with: {pf.corr_with}</p>
+                      <p className="text-xs text-white/50 mt-1">Correlated with: {pf.corr_with}</p>
                     </div>
                   ))
                 ) : (
-                  <div className="p-6 text-center text-foreground/50 text-sm">
+                  <div className="p-6 text-center text-white/50 text-sm">
                     <p>No significant proxy variables detected.</p>
                     <p className="text-xs mt-1">Features with &gt;25% correlation to sensitive attributes would appear here.</p>
                   </div>
@@ -880,18 +890,18 @@ export default function NewTrialPage() {
       </div>
 
       {/* BOTTOM PANEL: The Jury */}
-      <div className={`${bottomCollapsed ? 'h-[44px]' : 'h-[180px]'} border-t border-border bg-surface shrink-0 overflow-hidden flex flex-col transition-all duration-300`}>
+      <div className={`${bottomCollapsed ? 'h-[44px]' : 'h-[180px]'} border-t border-white/10 bg-black/40 backdrop-blur-2xl shrink-0 overflow-hidden flex flex-col transition-all duration-300`}>
         <div className="flex items-center justify-between px-4 py-2.5 shrink-0">
           <h3 className="text-sm font-bold flex items-center gap-2">
-            Synthetic Jury {!bottomCollapsed && <span className="text-xs font-normal text-foreground/50">Experiencing model decisions in real-time</span>}
+            Synthetic Jury {!bottomCollapsed && <span className="text-xs font-normal text-white/50">Experiencing model decisions in real-time</span>}
           </h3>
-          <button onClick={() => setBottomCollapsed(!bottomCollapsed)} className="p-1 rounded-md hover:bg-background transition-colors" title={bottomCollapsed ? 'Expand Jury' : 'Collapse Jury'}>
-            {bottomCollapsed ? <ChevronUp className="w-4 h-4 text-foreground/50" /> : <PanelBottomClose className="w-4 h-4 text-foreground/50" />}
+          <button onClick={() => setBottomCollapsed(!bottomCollapsed)} className="p-1 rounded-md hover:bg-black/40 backdrop-blur-2xl transition-colors" title={bottomCollapsed ? 'Expand Jury' : 'Collapse Jury'}>
+            {bottomCollapsed ? <ChevronUp className="w-4 h-4 text-white/50" /> : <PanelBottomClose className="w-4 h-4 text-white/50" />}
           </button>
         </div>
-        <div className="flex gap-4 overflow-x-auto pb-4 px-4 hide-scrollbar">
+        <div className="flex gap-4 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pb-4 px-4 hide-scrollbar">
           {juryLoading ? (
-            <div className="flex items-center justify-center w-full gap-2 text-foreground/50 text-sm py-4">
+            <div className="flex items-center justify-center w-full gap-2 text-white/50 text-sm py-4">
               <Loader2 className="w-4 h-4 animate-spin" /> Assembling jury...
             </div>
           ) : juryPersonas.map((persona, index) => {
@@ -903,26 +913,26 @@ export default function NewTrialPage() {
                 layout
                 className={`w-[240px] shrink-0 rounded-xl p-3 border transition-colors relative overflow-hidden group
                   ${isRevealed 
-                    ? (isApproved ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200') 
-                    : 'bg-background border-border'}
+                    ? (isApproved ? 'bg-white/[0.03] border-white/10' : 'bg-white/[0.03] border-white/10') 
+                    : 'bg-black/40 backdrop-blur-2xl border-white/10'}
                 `}
               >
                 <div className="flex gap-3">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0
                     ${isRevealed 
-                      ? (isApproved ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700') 
-                      : 'bg-gray-100 text-gray-400'}
+                      ? (isApproved ? 'bg-white/10 text-white' : 'bg-white/10 text-white') 
+                      : 'bg-white/5 text-white/40'}
                   `}>
                     {persona.name.split(' ').map(n => n[0]).join('')}
                   </div>
                   <div className="overflow-hidden">
-                    <p className={`font-semibold text-sm truncate ${isRevealed ? 'text-foreground' : 'text-foreground/40'}`}>
+                    <p className={`font-semibold text-sm truncate ${isRevealed ? 'text-white' : 'text-white/40'}`}>
                       {persona.name}
                     </p>
-                    <p className="text-xs text-foreground/50 truncate">
+                    <p className="text-xs text-white/50 truncate">
                       {persona.age} • {persona.occupation}
                     </p>
-                    <p className="text-xs text-foreground/50 truncate">
+                    <p className="text-xs text-white/50 truncate">
                       {persona.demographic}
                     </p>
                   </div>
@@ -933,9 +943,9 @@ export default function NewTrialPage() {
                   {!isRevealed && (
                     <motion.div 
                       exit={{ opacity: 0 }}
-                      className="absolute inset-0 bg-background/80 backdrop-blur-[1px] flex items-center justify-center z-10"
+                      className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10"
                     >
-                      <span className="text-xs font-bold text-foreground/40 uppercase tracking-widest animate-pulse">Pending</span>
+                      <span className="text-xs font-bold text-white/40 uppercase tracking-widest animate-pulse">Pending</span>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -943,7 +953,7 @@ export default function NewTrialPage() {
                 {/* Outcome Badge */}
                 {isRevealed && (
                   <div className={`absolute top-3 right-3
-                    ${isApproved ? 'text-green-600' : 'text-red-600'}
+                    ${isApproved ? 'text-white/40' : 'text-white/40'}
                   `}>
                     {isApproved ? <CheckCircle2 className="w-5 h-5" /> : <XCircle className="w-5 h-5" />}
                   </div>
