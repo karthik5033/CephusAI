@@ -15,30 +15,9 @@ from __future__ import annotations
 
 import json
 import logging
-import os
-from typing import Any
-
-import anthropic
+from backend.services.llm import get_llm_client
 
 logger = logging.getLogger("courtroom.simulation")
-
-# ---------------------------------------------------------------------------
-# Client
-# ---------------------------------------------------------------------------
-
-def _get_client() -> anthropic.Anthropic:
-    """Return an Anthropic client.  Raises if API key is missing."""
-    api_key = os.getenv("ANTHROPIC_API_KEY", "")
-    if not api_key or api_key == "your_key_here":
-        raise RuntimeError(
-            "ANTHROPIC_API_KEY is not configured.  "
-            "Set it in backend/.env to use the courtroom simulation."
-        )
-    return anthropic.Anthropic(api_key=api_key)
-
-
-MODEL = "claude-sonnet-4-20250514"
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -126,14 +105,14 @@ INSTRUCTIONS:
 
 Write 3-5 paragraphs.  Be specific with numbers.  Be persuasive.  No hedging."""
 
-    logger.info("Calling Claude for prosecution argument…")
-    response = client.messages.create(
-        model=MODEL,
-        max_tokens=1500,
+    logger.info("Calling LLM for prosecution argument…")
+    llm = get_llm_client()
+    text = llm.chat(
+        system="",
         messages=[{"role": "user", "content": prompt}],
-        temperature=0.7,
+        max_tokens=1500,
+        temperature=0.7
     )
-    text = response.content[0].text
     logger.info("Prosecution argument generated (%d chars)", len(text))
     return text
 
@@ -184,14 +163,14 @@ INSTRUCTIONS:
 
 Write 3-5 paragraphs.  Be specific with numbers.  Counter the prosecution's key points."""
 
-    logger.info("Calling Claude for defense argument…")
-    response = client.messages.create(
-        model=MODEL,
-        max_tokens=1500,
+    logger.info("Calling LLM for defense argument…")
+    llm = get_llm_client()
+    text = llm.chat(
+        system="",
         messages=[{"role": "user", "content": prompt}],
-        temperature=0.7,
+        max_tokens=1500,
+        temperature=0.7
     )
-    text = response.content[0].text
     logger.info("Defense argument generated (%d chars)", len(text))
     return text
 
@@ -254,14 +233,14 @@ JUDGING CRITERIA:
 
 Return ONLY the JSON object."""
 
-    logger.info("Calling Claude for judge verdict…")
-    response = client.messages.create(
-        model=MODEL,
-        max_tokens=2000,
+    logger.info("Calling LLM for judge verdict…")
+    llm = get_llm_client()
+    raw = llm.chat(
+        system="",
         messages=[{"role": "user", "content": prompt}],
-        temperature=0.3,
+        max_tokens=2000,
+        temperature=0.3
     )
-    raw = response.content[0].text.strip()
 
     # Strip markdown fences if Claude wraps it
     if raw.startswith("```"):

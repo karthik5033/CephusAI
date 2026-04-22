@@ -16,7 +16,7 @@ import numpy as np
 import pandas as pd
 
 from backend.services.bias_engine import prepare_dataset, match_features
-from backend.services.courtroom import _get_client, MODEL
+from backend.services.llm import get_llm_client
 
 logger = logging.getLogger("courtroom.explainability")
 
@@ -322,16 +322,14 @@ Return a SINGLE JSON object with this schema:
 
 Generate the JSON object now, following the schema exactly and without adding extra top-level keys."""
 
-    logger.info("Calling Claude for %s narrative…", mode)
-    response = client.messages.create(
-        model=MODEL,
-        max_tokens=1500,
+    logger.info("Calling LLM for %s narrative…", mode)
+    llm = get_llm_client()
+    raw = llm.chat(
         system=system_prompt,
         messages=[{"role": "user", "content": user_prompt}],
+        max_tokens=1500,
         temperature=0.3,
     )
-    
-    raw = response.content[0].text.strip()
     if raw.startswith("```"):
         raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
     
