@@ -10,7 +10,7 @@ import {
   ShieldCheck, ShieldX,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import jsPDF from "jspdf";
+import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 
 // ─── Types ──────────────────────────────────────────────────────────────────

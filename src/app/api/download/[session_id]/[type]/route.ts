@@ -12,7 +12,7 @@ export async function GET(
     }
 
     const fastApiUrl = process.env.FASTAPI_URL || "http://localhost:8000";
-    const response = await fetch(`${fastApiUrl}/download/${session_id}/${type}`);
+    const response = await fetch(`${fastApiUrl}/api/remediation/${session_id}/download/${type}`);
 
     if (!response.ok) {
       const data = await response.json();

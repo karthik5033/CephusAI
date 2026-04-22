@@ -39,7 +39,6 @@ export default function LandingPage() {
   });
 
   useEffect(() => {
-    // Demo stats for landing page
     setLiveStats({
       demographic_parity: 0.62,
       disparate_impact: 0.58,
@@ -62,9 +61,10 @@ export default function LandingPage() {
         </video>
       </div>
 
-      {/* Cinematic Overlay to ensure text readability */}
+      {/* Cinematic Overlay */}
       <div className="fixed inset-0 bg-black/30 z-[-1]" />
       <div className="fixed inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/80 z-[-1]" />
+
       {/* Hero Section */}
       <section id="about" className="relative pt-32 pb-20 px-6">
         <div className="max-w-5xl mx-auto text-center relative z-10 pt-20">
@@ -134,47 +134,47 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {/* Card 1: Demographic Parity */}
-            <div className={`relative p-8 rounded-2xl backdrop-blur-xl border ${liveStats.demographic_parity > 0 && liveStats.demographic_parity < 0.8 ? 'bg-red-500/10 border-red-500/30 shadow-[0_0_30px_rgba(239,68,68,0.1)]' : 'bg-green-500/10 border-green-500/30'}`}>
+            {/* Card 1 */}
+            <div className={`relative p-8 rounded-2xl backdrop-blur-xl border ${liveStats.demographic_parity > 0 && liveStats.demographic_parity < 0.8 ? 'bg-red-500/10 border-red-500/30' : 'bg-green-500/10 border-green-500/30'}`}>
               <div className="flex justify-end mb-4">
                 <span className={`text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest ${liveStats.demographic_parity > 0 && liveStats.demographic_parity < 0.8 ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`}>
                   {liveStats.demographic_parity === 0 ? '...' : (liveStats.demographic_parity < 0.8 ? 'FAIL' : 'PASS')}
                 </span>
               </div>
               <div className={`text-5xl font-black mb-3 ${liveStats.demographic_parity > 0 && liveStats.demographic_parity < 0.8 ? 'text-red-400' : 'text-green-400'}`}>
-                {liveStats.demographic_parity > 0 ? <CountUp value={liveStats.demographic_parity} /> : "0.00"}
+                <CountUp value={liveStats.demographic_parity} />
               </div>
               <div className="text-sm font-medium text-white/60">Demographic Parity</div>
             </div>
 
-            {/* Card 2: Disparate Impact Ratio */}
-            <div className={`relative p-8 rounded-2xl backdrop-blur-xl border ${liveStats.disparate_impact > 0 && liveStats.disparate_impact < 0.8 ? 'bg-red-500/10 border-red-500/30 shadow-[0_0_30px_rgba(239,68,68,0.1)]' : 'bg-green-500/10 border-green-500/30'}`}>
+            {/* Card 2 */}
+            <div className={`relative p-8 rounded-2xl backdrop-blur-xl border ${liveStats.disparate_impact > 0 && liveStats.disparate_impact < 0.8 ? 'bg-red-500/10 border-red-500/30' : 'bg-green-500/10 border-green-500/30'}`}>
               <div className="flex justify-end mb-4">
                 <span className={`text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest ${liveStats.disparate_impact > 0 && liveStats.disparate_impact < 0.8 ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`}>
                   {liveStats.disparate_impact === 0 ? '...' : (liveStats.disparate_impact < 0.8 ? 'FAIL' : 'PASS')}
                 </span>
               </div>
               <div className={`text-5xl font-black mb-3 ${liveStats.disparate_impact > 0 && liveStats.disparate_impact < 0.8 ? 'text-red-400' : 'text-green-400'}`}>
-                {liveStats.disparate_impact > 0 ? <CountUp value={liveStats.disparate_impact} /> : "0.00"}
+                <CountUp value={liveStats.disparate_impact} />
               </div>
               <div className="text-sm font-medium text-white/60">Disparate Impact</div>
             </div>
 
-            {/* Card 3: Equal Opportunity Score */}
-            <div className={`relative p-8 rounded-2xl backdrop-blur-xl border ${liveStats.equal_opportunity > 0 && liveStats.equal_opportunity < 0.8 ? 'bg-red-500/10 border-red-500/30 shadow-[0_0_30px_rgba(239,68,68,0.1)]' : 'bg-green-500/10 border-green-500/30'}`}>
+            {/* Card 3 */}
+            <div className={`relative p-8 rounded-2xl backdrop-blur-xl border ${liveStats.equal_opportunity > 0 && liveStats.equal_opportunity < 0.8 ? 'bg-red-500/10 border-red-500/30' : 'bg-green-500/10 border-green-500/30'}`}>
               <div className="flex justify-end mb-4">
                 <span className={`text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest ${liveStats.equal_opportunity > 0 && liveStats.equal_opportunity < 0.8 ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`}>
                   {liveStats.equal_opportunity === 0 ? '...' : (liveStats.equal_opportunity < 0.8 ? 'FAIL' : 'PASS')}
                 </span>
               </div>
               <div className={`text-5xl font-black mb-3 ${liveStats.equal_opportunity > 0 && liveStats.equal_opportunity < 0.8 ? 'text-red-400' : 'text-green-400'}`}>
-                {liveStats.equal_opportunity > 0 ? <CountUp value={liveStats.equal_opportunity} /> : "0.00"}
+                <CountUp value={liveStats.equal_opportunity} />
               </div>
               <div className="text-sm font-medium text-white/60">Equal Opportunity</div>
             </div>
 
-            {/* Card 4: Dataset Size */}
-            <div className="relative p-8 rounded-2xl backdrop-blur-xl border bg-blue-500/10 border-blue-500/30 shadow-[0_0_30px_rgba(59,130,246,0.1)]">
+            {/* Card 4 */}
+            <div className="relative p-8 rounded-2xl backdrop-blur-xl border bg-blue-500/10 border-blue-500/30">
               <div className="flex justify-end mb-4">
                 <span className="text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest bg-blue-500/20 text-blue-400">
                   INFO
@@ -189,7 +189,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* How It Works */}
+      {/* Protocol Section */}
       <section className="py-32 px-6 relative z-10">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
@@ -198,30 +198,10 @@ export default function LandingPage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 relative">
-            <div className="hidden md:block absolute top-12 left-[15%] right-[15%] h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-            
             {[
-              {
-                icon: Upload,
-                title: "1. Submit Evidence",
-                desc: "Upload your dataset and model. We auto-detect sensitive demographic attributes.",
-                color: "text-blue-400",
-                bg: "bg-blue-500/20 border-blue-500/30"
-              },
-              {
-                icon: Scale,
-                title: "2. The Trial",
-                desc: "Prosecution and Defense LLM agents debate bias metrics while a synthetic jury experiences the model.",
-                color: "text-red-400",
-                bg: "bg-red-500/20 border-red-500/30"
-              },
-              {
-                icon: RefreshCw,
-                title: "3. Verdict & Reform",
-                desc: "The Judge delivers a structured verdict and applies mitigation techniques for a fairer retrial.",
-                color: "text-gold",
-                bg: "bg-gold/20 border-gold/30"
-              }
+              { icon: Upload, title: "1. Submit Evidence", desc: "Upload your dataset and model. We auto-detect sensitive demographic attributes.", color: "text-blue-400", bg: "bg-blue-500/20 border-blue-500/30" },
+              { icon: Scale, title: "2. The Trial", desc: "Prosecution and Defense LLM agents debate bias metrics while a synthetic jury experiences the model.", color: "text-red-400", bg: "bg-red-500/20 border-red-500/30" },
+              { icon: RefreshCw, title: "3. Verdict & Reform", desc: "The Judge delivers a structured verdict and applies mitigation techniques for a fairer retrial.", color: "text-gold", bg: "bg-gold/20 border-gold/30" }
             ].map((step, i) => (
               <motion.div 
                 key={i}
@@ -246,13 +226,7 @@ export default function LandingPage() {
       <section className="py-32 px-6 relative z-10 border-t border-white/10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-20 items-center">
           <div className="md:w-1/2">
-            <h2 className="text-4xl md:text-5xl font-black mb-8 leading-tight">
-              High-stakes domains require high-scrutiny AI.
-            </h2>
-            <p className="text-white/60 text-xl mb-10 leading-relaxed font-light">
-              Static fairness dashboards are ignored. By putting models through an adversarial trial, we force explicit justification of disparate impact across critical sectors.
-            </p>
-            
+            <h2 className="text-4xl md:text-5xl font-black mb-8 leading-tight">High-stakes domains require high-scrutiny AI.</h2>
             <div className="space-y-6">
               {[
                 { icon: Briefcase, text: "HR & Recruitment: Resume screening bias" },
@@ -261,7 +235,7 @@ export default function LandingPage() {
                 { icon: ScaleIcon, text: "Criminal Justice: Recidivism prediction" },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-4 text-white/80 text-lg">
-                  <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-sm">
+                  <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
                     <item.icon className="w-6 h-6 text-gold" />
                   </div>
                   <span className="font-medium">{item.text}</span>
@@ -280,64 +254,26 @@ export default function LandingPage() {
                 </span>
               </div>
               <div className="space-y-6 text-base leading-relaxed">
-                <div>
-                  <span className="text-red-400 font-bold">PROSECUTION: </span>
-                  <span className="text-white/70">The data shows a disparate impact ratio of 0.62 for African American applicants. The model relies heavily on zip code proxies.</span>
-                </div>
-                <div>
-                  <span className="text-blue-400 font-bold">DEFENSE: </span>
-                  <span className="text-white/70">Zip code correlates with employment tenure in this dataset, which is a justified business necessity for loan approval.</span>
-                </div>
-                <div>
-                  <span className="text-gold font-bold">JUDGE: </span>
-                  <span className="text-white/70">Objection overruled. Proxy variables for protected classes violate demographic parity. Ordered mitigation: Feature Dropping and Retrial.</span>
-                </div>
+                <div><span className="text-red-400 font-bold">PROSECUTION: </span><span className="text-white/70">The data shows a disparate impact ratio of 0.62 for African American applicants.</span></div>
+                <div><span className="text-blue-400 font-bold">DEFENSE: </span><span className="text-white/70">Zip code correlates with employment tenure in this dataset.</span></div>
+                <div><span className="text-gold font-bold">JUDGE: </span><span className="text-white/70">Objection overruled. Proxy variables for protected classes violate demographic parity.</span></div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-40 px-6 relative z-10 text-center">
-        <div className="max-w-4xl mx-auto relative z-10">
-          <h2 className="text-5xl md:text-6xl font-black mb-8">Ready to cross-examine your AI?</h2>
-          <p className="text-2xl text-white/60 mb-12 font-light">
-            Run our pre-loaded COMPAS demo or upload your own dataset to see TrialAI in action.
-          </p>
-          <Link 
-            href="/demo"
-            className="inline-flex items-center gap-3 bg-white text-black font-bold px-12 py-6 rounded-xl hover:bg-gray-200 transition-all shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:shadow-[0_0_60px_rgba(255,255,255,0.4)] hover:-translate-y-1 text-lg"
-          >
-            Start the Trial
-            <ChevronRight className="w-6 h-6" />
-          </Link>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="border-t border-white/10 py-12 px-6 bg-black/80 backdrop-blur-xl text-sm text-white/50 relative z-10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-<<<<<<< HEAD
-          <div className="flex items-center gap-2 font-mono font-bold text-foreground">
-            <ScaleIcon className="w-4 h-4 text-gold" />
-            <span>AI Courtroom v2.0</span>
-=======
           <div className="flex items-center gap-3 font-mono font-bold text-white text-lg">
             <ScaleIcon className="w-5 h-5 text-gold" />
             <span>TrialAI</span>
->>>>>>> fb97a29 (feat(ui): complete cinematic premium dark mode overhaul across demo and trial routes)
           </div>
-          
           <div className="flex gap-8">
             <Link href="#about" className="hover:text-white transition-colors">About</Link>
             <Link href="/demo" className="hover:text-white transition-colors">Demo</Link>
             <Link href="/trial/upload" className="hover:text-white transition-colors">Upload</Link>
-          </div>
-
-          <div className="flex items-center gap-6">
-            <a href="https://github.com/karthik5033/CephusAI" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors font-medium">GitHub</a>
-            <a href="https://linkedin.com/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors font-medium">LinkedIn</a>
           </div>
         </div>
       </footer>

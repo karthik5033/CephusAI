@@ -7,7 +7,7 @@ import BiasFingerprint from "@/app/components/BiasFingerprint";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import jsPDF from "jspdf";
+import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 
 const FADE_UP = {
