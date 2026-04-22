@@ -270,7 +270,7 @@ export default function DemoPage() {
         {/* LEFT PANEL: Case File */}
         <div className="w-[300px] border-r border-white/10 bg-black/40 backdrop-blur-2xl flex flex-col p-6 overflow-y-auto [&::-webkit-scrollbar]:hidden shrink-0 hidden lg:flex">
           <div className="flex items-center gap-2 mb-6">
-            <FileText className="w-5 h-5 text-white" />
+            <FileText className="w-5 h-5 text-blue-400" />
             <h2 className="font-bold text-lg">Case File</h2>
           </div>
 
@@ -287,16 +287,16 @@ export default function DemoPage() {
             <div>
               <p className="text-xs text-white/50 font-bold uppercase mb-2">Sensitive Attributes</p>
               <div className="flex flex-wrap gap-2">
-                <span className="px-2 py-1 bg-white/10 text-white/60 text-xs font-medium rounded border border-white/10">Race</span>
-                <span className="px-2 py-1 bg-white/10 text-white/60 text-xs font-medium rounded border border-white/10">Gender</span>
-                <span className="px-2 py-1 bg-white/10 text-white/60 text-xs font-medium rounded border border-white/10">Age</span>
+                <span className="px-2 py-1 bg-red-500/10 text-red-400 text-xs font-medium rounded border border-red-500/20">Race</span>
+                <span className="px-2 py-1 bg-red-500/10 text-red-400 text-xs font-medium rounded border border-red-500/20">Gender</span>
+                <span className="px-2 py-1 bg-red-500/10 text-red-400 text-xs font-medium rounded border border-red-500/20">Age</span>
               </div>
             </div>
 
             <div>
               <p className="text-xs text-white/50 font-bold uppercase mb-1">Model Profile</p>
               <p className="font-medium text-sm">{DEMO_DATASET.model}</p>
-              <p className="text-sm text-white font-medium mt-1">Accuracy: {DEMO_DATASET.accuracy}</p>
+              <p className="text-sm text-green-400 font-medium mt-1">Accuracy: {DEMO_DATASET.accuracy}</p>
             </div>
 
             <div className="pt-4 border-t border-white/10">
@@ -343,7 +343,7 @@ export default function DemoPage() {
             <div>
               <h1 className="font-bold text-lg tracking-tight flex items-center gap-2">
                 Trial #COMPAS-Demo
-                <span className="text-xs px-2 py-0.5 bg-white/10 text-white/60 rounded-full font-bold uppercase">Live</span>
+                <span className="text-xs px-2 py-0.5 bg-red-500/20 text-white rounded-full font-bold uppercase">Live</span>
               </h1>
             </div>
             <div className="flex items-center gap-2 text-sm font-medium">
@@ -358,10 +358,10 @@ export default function DemoPage() {
           </div>
 
           {/* Current Charge Banner */}
-          <div className="bg-white/5 border-b border-white/10 px-6 py-3 flex items-center justify-between shrink-0 z-10">
+          <div className="bg-white/5 border-b border-white/10 px-6 py-4 flex items-center justify-between shrink-0 z-10 backdrop-blur-md">
             <div className="flex items-center gap-3">
-              <AlertTriangle className="w-5 h-5 text-white shrink-0" />
-              <span className="font-semibold text-sm text-white">Charge #{currentChargeIndex + 1}: {CHARGES[currentChargeIndex]}</span>
+              <AlertTriangle className="w-5 h-5 text-white" />
+              <span className="font-semibold text-sm text-red-300">Charge #{currentChargeIndex + 1}: {CHARGES[currentChargeIndex]}</span>
             </div>
             {!trialComplete && <span className="text-xs font-mono text-white uppercase tracking-wider font-semibold animate-pulse hidden sm:inline">Under Review</span>}
           </div>
@@ -382,7 +382,7 @@ export default function DemoPage() {
                     <div className={`w-10 h-10 rounded-full ${style.bg} border ${style.border} flex items-center justify-center shrink-0`}>
                       <Icon className={`w-5 h-5 ${style.color}`} />
                     </div>
-                    <div className="flex-1 bg-white/[0.02] border border-white/10 p-5 rounded-2xl rounded-tl-sm shadow-sm">
+                    <div className="flex-1 bg-black/40 backdrop-blur-2xl border border-white/5 p-6 rounded-2xl shadow-2xl">
                       <div className="flex items-center gap-2 mb-2">
                         <span className={`text-xs font-bold ${style.color}`}>{msg.role}</span>
                         <span className="text-xs text-white/50 font-mono border-l border-white/10 pl-2">{msg.name}</span>
@@ -414,15 +414,15 @@ export default function DemoPage() {
 
         {/* RIGHT PANEL: Evidence Board */}
         <div className="w-[380px] border-l border-white/10 bg-black/40 backdrop-blur-2xl flex flex-col shrink-0 hidden xl:flex">
-          <div className="p-4 border-b border-white/10 bg-transparent">
+          <div className="p-4 border-b border-white/10 bg-black/40 backdrop-blur-2xl">
             <h2 className="font-bold mb-4">Evidence Board</h2>
-            <div className="flex gap-2 bg-white/[0.02] p-1 rounded-lg border border-white/10">
+            <div className="flex gap-2 bg-black/40 backdrop-blur-2xl p-1 rounded-lg border border-white/10">
               {(["Fairness", "Features", "Counterfactuals"] as const).map(tab => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`flex-1 text-xs font-medium py-1.5 rounded-md transition-colors ${
-                    activeTab === tab ? "bg-transparent shadow-sm text-white" : "text-white/60 hover:text-white"
+                    activeTab === tab ? "bg-black/40 backdrop-blur-2xl shadow-sm text-white" : "text-white/60 hover:text-white"
                   }`}
                 >
                   {tab}
@@ -434,30 +434,30 @@ export default function DemoPage() {
           <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden p-4">
             {activeTab === "Fairness" && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
-                <div className="p-4 bg-transparent border border-white/10 rounded-xl">
+                <div className="p-4 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-xl">
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="text-sm font-semibold">Demographic Parity</h3>
-                    <AlertTriangle className="w-4 h-4 text-white/60" />
+                    <AlertTriangle className="w-4 h-4 text-red-500" />
                   </div>
-                  <div className="text-3xl font-bold text-white mb-1">0.62</div>
+                  <div className="text-4xl font-light tracking-tight mb-1 text-white">0.62</div>
                   <p className="text-xs text-white/60">Severe violation (Threshold: &gt;0.80). African Americans are 38% less likely to receive a favorable outcome.</p>
                 </div>
                 
-                <div className="p-4 bg-transparent border border-white/10 rounded-xl">
+                <div className="p-4 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-xl">
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="text-sm font-semibold">Equal Opportunity</h3>
-                    <AlertTriangle className="w-4 h-4 text-white" />
+                    <AlertTriangle className="w-4 h-4 text-amber-500" />
                   </div>
-                  <div className="text-3xl font-bold text-white mb-1">0.75</div>
+                  <div className="text-4xl font-light tracking-tight mb-1 text-white">0.75</div>
                   <p className="text-xs text-white/60">Moderate violation. True positive rates differ significantly across demographic groups.</p>
                 </div>
 
-                <div className="p-4 bg-transparent border border-white/10 rounded-xl">
+                <div className="p-4 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-xl">
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="text-sm font-semibold">Disparate Impact</h3>
-                    <AlertTriangle className="w-4 h-4 text-white/60" />
+                    <AlertTriangle className="w-4 h-4 text-red-500" />
                   </div>
-                  <div className="text-3xl font-bold text-white mb-1">0.58</div>
+                  <div className="text-4xl font-light tracking-tight mb-1 text-white">0.58</div>
                   <p className="text-xs text-white/60">Severe violation. Structural bias detected in the underlying dataset distributions.</p>
                 </div>
               </motion.div>
@@ -487,14 +487,14 @@ export default function DemoPage() {
             {activeTab === "Counterfactuals" && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
                 {COUNTERFACTUALS.map(cf => (
-                  <div key={cf.id} className="bg-transparent border border-white/10 p-3 rounded-lg text-sm">
-                    <p className="text-xs font-mono text-white bg-white/10 inline-block px-1 rounded mb-2">{cf.attr}</p>
+                  <div key={cf.id} className="bg-black/40 backdrop-blur-2xl border border-white/10 p-3 rounded-lg text-sm">
+                    <p className="text-xs font-mono text-blue-400 bg-blue-500/10 inline-block px-1 rounded mb-2">{cf.attr}</p>
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-white/60 line-through">{cf.original}</span>
                       <ArrowRight className="w-3 h-3 mx-2 text-white/40" />
                       <span className="font-semibold">{cf.flipped}</span>
                     </div>
-                    <p className="text-xs text-white mt-2 bg-white/10 px-2 py-1 rounded">{cf.change}</p>
+                    <p className="text-xs text-white mt-2 bg-gold/10 px-2 py-1 rounded">{cf.change}</p>
                   </div>
                 ))}
               </motion.div>
@@ -504,7 +504,7 @@ export default function DemoPage() {
       </div>
 
       {/* BOTTOM PANEL: The Jury */}
-      <div className="h-[180px] border-t border-white/10 bg-white/[0.02] shrink-0 p-4 overflow-hidden flex flex-col">
+      <div className="h-[180px] border-t border-white/10 bg-black/40 backdrop-blur-2xl shrink-0 p-4 overflow-hidden flex flex-col">
         <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
           Synthetic Jury <span className="text-xs font-normal text-white/50">Experiencing model decisions in real-time</span>
         </h3>
@@ -525,8 +525,8 @@ export default function DemoPage() {
                 <div className="flex gap-3">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0
                     ${isRevealed 
-                      ? (isApproved ? 'bg-white/10 text-white/60' : 'bg-white/10 text-white/60') 
-                      : 'bg-white/10 text-white/40'}
+                      ? (isApproved ? 'bg-white/10 text-white' : 'bg-white/10 text-white') 
+                      : 'bg-white/5 text-white/40'}
                   `}>
                     {persona.name.split(' ').map(n => n[0]).join('')}
                   </div>
@@ -548,7 +548,7 @@ export default function DemoPage() {
                   {!isRevealed && (
                     <motion.div 
                       exit={{ opacity: 0 }}
-                      className="absolute inset-0 bg-transparent/80 backdrop-blur-[1px] flex items-center justify-center z-10"
+                      className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10"
                     >
                       <span className="text-xs font-bold text-white/40 uppercase tracking-widest animate-pulse">Pending</span>
                     </motion.div>
@@ -558,7 +558,7 @@ export default function DemoPage() {
                 {/* Outcome Badge */}
                 {isRevealed && (
                   <div className={`absolute top-3 right-3
-                    ${isApproved ? 'text-white' : 'text-white'}
+                    ${isApproved ? 'text-green-400' : 'text-red-400'}
                   `}>
                     {isApproved ? <CheckCircle2 className="w-5 h-5" /> : <XCircle className="w-5 h-5" />}
                   </div>
@@ -570,7 +570,7 @@ export default function DemoPage() {
       </div>
       
       {/* WHAT IS COMPAS? Collapsible Section */}
-      <div className="bg-transparent border-t border-white/10 shrink-0">
+      <div className="bg-black/60 backdrop-blur-3xl border-t border-white/10 shrink-0">
         <details className="group px-6 py-4">
           <summary className="font-semibold text-sm cursor-pointer list-none flex items-center gap-2 text-white/80 hover:text-white">
             <ChevronRight className="w-4 h-4 transition-transform group-open:rotate-90" />
